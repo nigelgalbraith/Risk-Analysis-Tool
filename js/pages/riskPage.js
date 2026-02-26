@@ -1,3 +1,24 @@
+/*
+  riskPage.js
+
+  Single entry point for riskPage.html.
+
+  Responsibilities:
+    - Read service key from URL
+    - Assign service key to pane host data attributes
+    - Update page heading and document title
+    - Load theme behaviour
+    - Load pane framework + pane implementations + text data
+*/
+
+import "../core/helpers.js";
+import "../core/PanesCore.js";
+import "../panes/RiskTablePane.js";
+import "../panes/RiskSummaryPane.js";
+import "../../text/intro.js";
+import "../panes/IntroPane.js";
+import "../themeToggle.js";
+
 (function () {
   "use strict";
 

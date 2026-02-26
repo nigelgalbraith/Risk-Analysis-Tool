@@ -61,19 +61,16 @@
 
 </div>
 
-<!-- Core UI scripts -->
-<script src="js/themeToggle.js"></script>
-
-<!-- Pane framework (auto-boot on DOMContentLoaded) -->
-<script src="js/panes/PanesCore.js"></script>
-
-<!-- Data sources -->
-<script src="text/intro.js"></script>
-<script src="text/introCard.js"></script>
-
-<!-- Pane implementations -->
-<script src="js/panes/IntroPane.js"></script>
-<script src="js/panes/IntroCardPane.js"></script>
+<!--
+  Single page entry point:
+    - loads shared helpers
+    - loads PanesCore
+    - loads pane implementations used on this page
+    - loads data sources (text/intro.js, text/introCard.js)
+    - loads theme behaviour
+  PanesCore auto-bootstraps panes on DOMContentLoaded.
+-->
+<script type="module" src="js/pages/homePage.js"></script>
 
 </body>
 </html>

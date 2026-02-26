@@ -10,7 +10,7 @@
       riskPage.html?service=security
       riskPage.html?service=backups
 
-    RiskPageInit.js reads the service key and sets data attributes on pane hosts
+    riskPage.js reads the service key and sets data attributes on pane hosts
     before PanesCore bootstraps panes on DOMContentLoaded.
   -->
   <title>Risk Analysis</title>
@@ -55,7 +55,7 @@
 
     <!--
       Pane host: Intro text
-      RiskPageInit.js sets: data-intro-key = service key (e.g. "security", "backups")
+      riskPage.js sets: data-intro-key = service key (e.g. "security", "backups")
       IntroPane reads data-intro-key and renders matching text from text/intro.js
     -->
     <div
@@ -66,7 +66,7 @@
 
     <!--
       Pane host: Risk table
-      RiskPageInit.js sets:
+      riskPage.js sets:
         - data-risk-key = service key
         - data-title    = "<Service> Risk Table"
       RiskTablePane reads data-risk-key and renders matching table configuration/data.
@@ -84,26 +84,17 @@
 
   </main>
 
-  <!-- Theme behaviour (persisted preference + toggling) -->
-  <script src="js/themeToggle.js"></script>
-
   <!--
-    Page initializer:
+    Single page entry point:
     - reads ?service=
     - sets data attributes on pane hosts
     - updates page title text
-    Must load before PanesCore so pane bootstrap sees the correct keys.
+    - loads theme behaviour
+    - loads PanesCore + pane implementations + text/intro.js
+    Must run before PanesCore bootstraps panes on DOMContentLoaded.
   -->
-  <script src="js/RiskPageInit.js"></script>
 
-  <!-- Pane framework (auto-bootstraps panes on DOMContentLoaded) -->
-  <script src="js/panes/PanesCore.js"></script>
-
-  <!-- Pane implementations -->
-  <script src="js/panes/RiskTablePane.js"></script>
-  <script src="js//panes/RiskSummaryPane.js"></script>
-  <script src="text/intro.js"></script>
-  <script src="js/panes/IntroPane.js"></script>
+  <script type="module" src="js/pages/riskPage.js"></script>
 
 </body>
 </html>
