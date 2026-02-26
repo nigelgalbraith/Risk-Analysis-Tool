@@ -1,90 +1,258 @@
 # Risk Analysis Tool
 
-Risk Analysis Tool is a lightweight, static web app for quickly scoring IT/support risk scenarios using simple control checklists.
+Risk Analysis Tool is a lightweight, static web application for scoring IT and support-related risk scenarios using structured control checklists.
 
-It’s JSON-driven, runs locally in a browser, and stores selections in `localStorage` so you can return later without losing state.
+It is fully client-side, JSON-driven, and runs locally in the browser. No backend or database required.
+
+Selections are stored in localStorage, allowing you to close the browser and return without losing state.
 
 ---
 
 ## What It Does
 
-- Provides multiple “risk analysis” tools (security, backups, email accounts, etc.)
-- Each tool is a checklist of controls/options
-- Disabling a control increases the overall **danger %**
-- Generates a **Risk Summary** (Low → Critical) based on total danger
-- Persists your selections per service in the browser (localStorage)
-- Includes a light/dark theme toggle
+- Provides multiple structured “risk analysis” tools
+- Each tool consists of configurable controls
+- Disabling controls increases total danger %
+- Automatically generates a Risk Summary (Low → Critical)
+- Persists state per service using localStorage
+- Includes light/dark theme toggle
+- Runs entirely offline
 
 ---
 
-## How It Works
+## Core Concept
 
-### Pages
+Each service (e.g. security, backups, wifi) defines:
 
-- `index.html`
-  - Main menu
-  - Renders intro text + service cards
+- A set of controls
+- A danger weight for each control
+- Default state (enabled/disabled)
+- Pros and cons per control
 
-- `riskPage.html?service=<key>`
-  - Single reusable risk page
-  - Example:
-    - `riskPage.html?service=security`
-    - `riskPage.html?service=wifiInternet`
+If a control is disabled, its danger value contributes to the total score.
 
-### Data Sources
+Total danger is capped at 100%.
 
-- `data/riskTables.json`
-  - Contains the risk controls for each service key
-  - Each control has:
-    - `id`
-    - `label`
-    - `default` (`enabled` / `disabled`)
-    - `danger` (adds to total if disabled)
-    - `pros` / `cons` lists
+The final score maps to a summary message defined in configuration.
 
-- `data/riskSummaryMessages.json`
-  - Defines score ranges and messages (Low/Moderate/High/Critical)
+---
 
-### Scoring Rules (current behaviour)
+## Pages
 
-- **Only disabled controls contribute danger**
-- Total danger is summed and capped at **100%**
-- Summary message is selected by matching the total to a configured range
+### index.html
 
-### Persistence
+- Renders the home page
+- Displays service cards
+- Loads intro content
+- Links to individual risk pages
 
-Selections are saved to:
+### riskPage.html?service=<key>
 
-- `localStorage` key: `riskAnalysisState.v1`
+Single reusable dynamic page.
+
+Examples:
+
+- riskPage.html?service=security
+- riskPage.html?service=wifiInternet
+- riskPage.html?service=backups
+
+The page reads the `service` query parameter and loads the correct configuration from JSON.
+
+---
+
+## Data Sources
+
+### data/riskTables.json
+
+Defines all services and their controls.
+
+Each control includes:
+
+- `id`
+- `label`
+- `default` ("enabled" or "disabled")
+- `danger` (integer weight)
+- `pros` (array)
+- `cons` (array)
+
+Example structure:
+
+```json
+"security": [
+  {
+    "id": "antivirus",
+    "label": "Antivirus Installed",
+    "default": "enabled",
+    "danger": 20,
+    "pros": ["Prevents malware"],
+    "cons": ["May slow system slightly"]
+  }
+]
+```
+
+---
+
+### data/riskSummaryMessages.json
+
+Defines score ranges and associated severity messages.
+
+Example:
+
+```json
+{
+  "min": 0,
+  "max": 25,
+  "label": "Low Risk",
+  "message": "System is reasonably protected."
+}
+```
+
+---
+
+## Persistence
+
+State is stored in:
+
+```
+localStorage key: riskAnalysisState.v1
+```
 
 Structure:
 
-- `state[serviceKey][controlId] = "enabled" | "disabled"`
+```
+state[serviceKey][controlId] = "enabled" | "disabled"
+```
+
+Each service maintains its own independent saved state.
 
 ---
 
-## Included Risk Tools (Services)
+## Included Risk Tools
 
-Defined in `data/riskTables.json` and linked from the home page cards:
+Currently defined services include:
 
-- `security`
-- `backups`
-- `emailAccounts`
-- `setupTroubleshooting`
-- `virusCleanup`
-- `dataBackup`
-- `computerRepair`
-- `wifiInternet`
-- `printerSetup`
+- security
+- backups
+- emailAccounts
+- setupTroubleshooting
+- virusCleanup
+- dataBackup
+- computerRepair
+- wifiInternet
+- printerSetup
+
+New tools can be added by updating the JSON and intro metadata.
+
+---
+
+## Project Structure
+
+```
+RiskAnalysis/
+│
+├── index.html
+├── riskPage.html
+│
+├── css/
+│   └── style.css
+│
+├── js/
+│   ├── core/
+│   │   └── PanesCore.js
+│   ├── panes/
+│   │   ├── IntroPane.js
+│   │   ├── CardsPane.js
+│   │   ├── RiskTablePane.js
+│   │   └── SummaryPane.js
+│   ├── pages/
+│   │   ├── indexPage.js
+│   │   └── riskPage.js
+│   └── themeToggle.js
+│
+├── data/
+│   ├── riskTables.json
+│   └── riskSummaryMessages.json
+│
+├── text/
+│   ├── intro.js
+│   └── introCards.js
+│
+├── images/
+│   └── (icons + favicons)
+│
+└── PythonFiles/
+    └── Image-Optimizer.py
+```
 
 ---
 
 ## Run Locally
 
-Because this repo uses ES module imports (`import ... from "./js/..."`), you should serve it over HTTP (opening the HTML file directly may break imports in some browsers).
+Because the project uses ES modules (`import` statements), serve it over HTTP.
 
-### Option 1: Python (recommended)
+### Option 1: Python
 
 ```bash
 cd RiskAnalysis
 python -m http.server 8000
+```
+
+Then open:
+
+```
+http://localhost:8000/index.html
+```
+
+---
+
+### Option 2: Any Static Server
+
+- VS Code Live Server
+- Nginx
+- Apache
+- Any simple static file server
+
+---
+
+## Adding a New Risk Tool
+
+1. Add a new key to `data/riskTables.json`.
+
+2. Add a matching card in `text/introCards.js`.
+
+3. (Optional) Add intro content in `text/intro.js`.
+
+No changes to HTML or core JS are required.
+
+The page automatically renders any valid service key.
+
+---
+
+## Asset Optimization (Optional)
+
+`PythonFiles/Image-Optimizer.py` is included to:
+
+- Generate optimized images
+- Produce favicon sets
+- Organize original vs optimized assets
+
+The web application itself does not require Python.
+
+---
+
+## Design Goals
+
+- Fully static
+- No backend dependencies
+- JSON-driven configuration
+- Modular pane-based UI architecture
+- Simple scoring logic
+- Easy extensibility
+- Clean, readable structure
+
+---
+
+## License
+
+MIT License.
+Anyone is free to use, modify, and improve this project.
