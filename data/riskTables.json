@@ -1,0 +1,20 @@
+{
+  "security": [
+    {
+      "id": "mfa",
+      "label": "MFA",
+      "default": "disabled",
+      "pros": ["Stops most credential-stuffing attacks", "Adds a second factor if password leaks"],
+      "cons": ["Adds friction for users", "Requires recovery process"]
+    }
+  ],
+  "backups": [
+    {
+      "id": "3-2-1",
+      "label": "3-2-1 backups",
+      "default": "disabled",
+      "pros": ["Strong resilience to ransomware/hardware failure"],
+      "cons": ["Costs more storage/time", "More operational overhead"]
+    }
+  ]
+}

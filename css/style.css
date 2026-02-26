@@ -1,0 +1,354 @@
+/* =========================
+   Theme Tokens
+   ========================= */
+:root {
+  --bg: #0b0f17;
+  --surface: #111827;
+  --surface-raised: #1a2232;
+  --surface-pressed: #0e1524;
+  --surface-button: #223044;
+  --surface-button-muted: #1e293b;
+  --text: #e5e7eb;
+  --text-strong: #ffffff;
+  --text-muted: #9ca3af;
+  --text-soft: #e5e5e5;
+  --text-inverse: #071018;
+  --border: #1f2937;
+  --accent: #06b6d4;
+  --shadow-card: 0 6px 14px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 10px 20px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="light"] {
+  --bg: #eef2f7;
+  --surface: #ffffff;
+  --surface-raised: #dde6f2;
+  --surface-pressed: #cbd5e1;
+  --surface-button: #b6c2d1;
+  --surface-button-muted: #e2e8f0;
+  --text: #0b0f17;
+  --text-strong: #000000;
+  --text-muted: #4b5563;
+  --text-soft: #1f2937;
+  --text-inverse: #ffffff;
+  --border: #9aa4b2;
+  --accent: #2563eb;
+  --shadow-card: 0 6px 14px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* =========================
+   Base / Reset
+   ========================= */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+}
+
+h1 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+/* =========================
+   App Layout
+   ========================= */
+.app {
+  max-width: min(110rem, 96vw);
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.header-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.split {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* =========================
+   Pane Shell (Shared)
+   ========================= */
+.pane {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.875rem;
+  width: 80%;
+  margin: 0 auto;
+  box-shadow: var(--shadow-card);
+}
+
+.pane h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  color: var(--text-strong);
+}
+
+/* =========================
+   Pane Content: Intro Text
+   ========================= */
+.intro-text {
+  margin: 0.75rem auto 1rem;
+  line-height: 1.5;
+  opacity: 0.95;
+}
+
+.intro-text p { margin: 0; }
+
+/* =========================
+   Pane Content: Risk Table
+   ========================= */
+.pane-host--risk-table .rt-title {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  text-align: center;
+}
+
+.pane-host--risk-table .rt-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.pane-host--risk-table th,
+.pane-host--risk-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 0.75rem;
+  vertical-align: top;
+}
+
+.pane-host--risk-table th {
+  text-align: left;
+  font-weight: 700;
+  color: var(--text-strong);
+  background: var(--surface-raised);
+}
+
+.pane-host--risk-table .rt-control { font-weight: 700; }
+
+.pane-host--risk-table .rt-status { min-width: 170px; }
+
+.pane-host--risk-table .rt-radio {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-right: 0.85rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pane-host--risk-table .rt-radio input { transform: translateY(1px); }
+
+.pane-host--risk-table .rt-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.pane-host--risk-table .rt-strike {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.9;
+}
+
+.pane-host--risk-table .rt-error {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface-pressed);
+  color: var(--text);
+}
+
+/* =========================
+   Controls: Theme Toggle
+   ========================= */
+button {
+  background: var(--surface-button);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  padding: 0.5rem 0.875rem;
+  font-weight: 600;
+}
+
+button:hover { filter: brightness(1.08); }
+
+.theme-toggle-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0 1.5rem;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 0.6rem 0.9rem;
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--accent);
+  outline: none;
+}
+
+.theme-toggle:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.theme-toggle-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.theme-toggle-text {
+  font-size: 0.95rem;
+}
+
+/* =========================
+   Navigation: Top Nav
+   ========================= */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0.75rem;
+  width: 80%;
+}
+
+.nav .nav-links {
+  display: flex;
+  gap: 5rem;
+}
+
+.nav .nav-links a {
+  text-decoration: none;
+  color: var(--text);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  transition: 0.15s ease;
+  opacity: 0.9;
+}
+
+.nav .nav-links a:hover {
+  color: var(--text-strong);
+  opacity: 1;
+  filter: brightness(1.15);
+  border-color: var(--accent);
+  background: var(--surface-pressed);
+}
+
+.nav .nav-links a[aria-current="page"] {
+  border-color: var(--accent);
+  background: var(--surface-pressed);
+  opacity: 1;
+}
+
+/* =========================
+   Home: Risk Analysis Card Grid
+   ========================= */
+.risk-analysis-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.risk-card {
+  display: block;
+  padding: 1.8rem;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.risk-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.risk-card h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.6rem;
+  color: var(--text-strong);
+}
+
+.risk-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.85;
+  line-height: 1.4rem;
+  color: var(--text-soft);
+}
+
+.risk-card a {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.risk-card a:visited {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 600px) {
+  .split {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pane {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .app { padding: 0.5rem; }
+}
