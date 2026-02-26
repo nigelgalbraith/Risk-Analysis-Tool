@@ -109,9 +109,11 @@ h1 {
 .intro-text p { margin: 0; }
 
 /* =========================
-   Pane Content: Risk Table
+   Pane Content: Risk Tables (Shared)
    ========================= */
-.pane-host--risk-table .rt-title {
+
+.pane-host--risk-table .rt-title,
+.pane-host--risk-summary .rt-title {
   margin: 0 0 1rem;
   font-size: 1.05rem;
   font-weight: 700;
@@ -119,21 +121,22 @@ h1 {
   text-align: center;
 }
 
-.pane-host--risk-table .rt-table {
+/* Shared table styling for any pane using .rt-table */
+.pane .rt-table {
   width: 100%;
   border-collapse: collapse;
   overflow: hidden;
   border-radius: 0.75rem;
 }
 
-.pane-host--risk-table th,
-.pane-host--risk-table td {
+.pane .rt-table th,
+.pane .rt-table td {
   border-bottom: 1px solid var(--border);
   padding: 0.85rem 0.75rem;
   vertical-align: top;
 }
 
-.pane-host--risk-table th {
+.pane .rt-table th {
   text-align: left;
   font-weight: 700;
   color: var(--text-strong);
@@ -173,6 +176,18 @@ h1 {
   border-radius: 0.75rem;
   background: var(--surface-pressed);
   color: var(--text);
+}
+
+.pane-host--risk-summary .rt-table th:first-child,
+.pane-host--risk-summary .rt-table td:first-child {
+  width: 40rem; 
+}
+
+/* Shared danger cell styling */
+.rt-danger {
+  white-space: nowrap;
+  text-align: right;
+  font-weight: 600;
 }
 
 /* =========================

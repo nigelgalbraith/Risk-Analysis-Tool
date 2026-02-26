@@ -4,9 +4,14 @@
   <meta charset="utf-8" />
   <title>Risk Analysis Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%2306b6d4'/><text x='50' y='62' font-size='58' text-anchor='middle' fill='%23071018'>LT</text></svg>">
+
+  <!-- Simple inline favicon -->
+  <link rel="icon" href="images/favicon/optimized/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/optimized/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/optimized/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/optimized/favicon-180x180.png">
+
 </head>
 
 <body>
@@ -15,56 +20,60 @@
   <header class="header-centered">
     <h1>Risk Analysis Tool</h1>
 
-  <!-- Theme toggle button -->
-  <div class="theme-toggle-wrapper">
-    <button
-      class="theme-toggle"
-      type="button"
-      aria-label="Toggle light/dark mode"
-      aria-pressed="false"
-      title="Toggle light/dark mode">
-      <span class="theme-toggle-icon" aria-hidden="true">☾</span>
-      <span class="theme-toggle-text">Theme</span>
-    </button>
-  </div>
-
-    <div class="profile-loader-wrapper">
-      <div
-        class="profile-loader-ticker"
-        data-pane="status-ticker"
-        data-messages-url="data/messages.json"
-        data-ticker-id="profile-main"
-      ></div>
+    <!-- Theme toggle button -->
+    <div class="theme-toggle-wrapper">
+      <button
+        class="theme-toggle"
+        type="button"
+        aria-label="Toggle light/dark mode"
+        aria-pressed="false"
+        title="Toggle light/dark mode">
+        <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+        <span class="theme-toggle-text">Theme</span>
+      </button>
     </div>
   </header>
 
   <main class="split" id="root">
+
     <section class="intro-hero">
 
+      <!-- Intro text pane -->
       <div
         class="intro-text"
         data-pane="intro-text"
-        data-intro-key="home"></div>
+        data-intro-key="home">
+      </div>
 
-      <div class="risk-analysis-grid">
-        <div data-pane="intro-card" data-card-key="security"></div>
-        <div data-pane="intro-card" data-card-key="backups"></div>
+      <!--
+        Intro cards container.
+        Cards are rendered dynamically by IntroCardsPane
+        using data from text/introCard.js.
+      -->
+      <div
+        class="risk-analysis-grid"
+        data-pane="intro-cards">
       </div>
 
     </section>
+
   </main>
+
 </div>
 
+<!-- Core UI scripts -->
 <script src="js/themeToggle.js"></script>
-<script src="js/PanesCore.js"></script>
+
+<!-- Pane framework (auto-boot on DOMContentLoaded) -->
+<script src="js/panes/PanesCore.js"></script>
+
+<!-- Data sources -->
 <script src="text/intro.js"></script>
 <script src="text/introCard.js"></script>
-<script src="js/IntroPane.js"></script>
-<script src="js/IntroCardPane.js"></script>
 
-<script>
-  window.Panes.bootstrap(document);
-</script>
+<!-- Pane implementations -->
+<script src="js/panes/IntroPane.js"></script>
+<script src="js/panes/IntroCardPane.js"></script>
 
 </body>
 </html>

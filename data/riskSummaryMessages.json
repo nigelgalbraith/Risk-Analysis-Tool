@@ -1,0 +1,6 @@
+[
+  { "min": 0,  "max": 20,  "title": "Low",      "message": "Low exposure. Maintain controls and review periodically." },
+  { "min": 21, "max": 40,  "title": "Moderate", "message": "Moderate exposure. Improve the most valuable controls first." },
+  { "min": 41, "max": 70,  "title": "High",     "message": "High exposure. Prioritise remediation and reduce risk quickly." },
+  { "min": 71, "max": 100, "title": "Critical", "message": "Critical exposure. Treat as urgent and implement key controls immediately." }
+]

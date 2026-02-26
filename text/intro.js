@@ -17,7 +17,7 @@ window.INTRO_TEXT = {
       </ul>
   `,
 
-  backup: `
+  backups: `
       <p>This tool helps you analyze backup risks. You can input data, assess potential threats, and generate reports.</p>
 
       <ul>

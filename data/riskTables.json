@@ -4,17 +4,297 @@
       "id": "mfa",
       "label": "MFA",
       "default": "disabled",
+      "danger": 30,
       "pros": ["Stops most credential-stuffing attacks", "Adds a second factor if password leaks"],
       "cons": ["Adds friction for users", "Requires recovery process"]
+    },
+    {
+      "id": "patching",
+      "label": "Patch Management",
+      "default": "disabled",
+      "danger": 40,
+      "pros": ["Reduces known exploit risk", "Improves baseline security posture"],
+      "cons": ["Can cause outages if unmanaged", "Requires maintenance window planning"]
     }
   ],
+  
   "backups": [
     {
       "id": "3-2-1",
       "label": "3-2-1 backups",
       "default": "disabled",
+      "danger": 50,
       "pros": ["Strong resilience to ransomware/hardware failure"],
       "cons": ["Costs more storage/time", "More operational overhead"]
+    },
+    {
+      "id": "restore-test",
+      "label": "Restore Testing",
+      "default": "disabled",
+      "danger": 35,
+      "pros": ["Proves backups are usable", "Reduces recovery-time surprises"],
+      "cons": ["Takes time to run regularly", "Needs documented procedure"]
+    }
+  ],
+
+  "emailAccounts": [
+    {
+      "id": "mfa",
+      "label": "Enable MFA on Email Account",
+      "default": "disabled",
+      "danger": 35,
+      "pros": ["Blocks most account takeover attempts", "Protects if password leaks"],
+      "cons": ["Adds sign-in friction", "Requires recovery options to be configured"]
+    },
+    {
+      "id": "recovery",
+      "label": "Set Recovery Email/Phone + Backup Codes",
+      "default": "disabled",
+      "danger": 25,
+      "pros": ["Prevents permanent lockout", "Makes recovery fast and controlled"],
+      "cons": ["Recovery methods must be kept up to date", "Poor recovery security can be a weak point"]
+    },
+    {
+      "id": "password-manager",
+      "label": "Use Password Manager + Unique Strong Password",
+      "default": "disabled",
+      "danger": 30,
+      "pros": ["Stops password reuse risk", "Improves password strength and hygiene"],
+      "cons": ["User adoption hurdle", "Requires secure master password"]
+    },
+    {
+      "id": "mail-client-security",
+      "label": "Secure Mail Client Settings (IMAP/SMTP App Passwords)",
+      "default": "disabled",
+      "danger": 20,
+      "pros": ["Reduces legacy auth exposure", "Limits impact of compromised devices"],
+      "cons": ["Setup complexity for some users", "Requires documentation/support"]
+    }
+  ],
+
+  "setupTroubleshooting": [
+    {
+      "id": "updates",
+      "label": "Run OS Updates + Driver Updates",
+      "default": "disabled",
+      "danger": 30,
+      "pros": ["Fixes known bugs and stability issues", "Improves security and performance"],
+      "cons": ["May introduce breaking changes", "Can take time/restarts"]
+    },
+    {
+      "id": "baseline",
+      "label": "Apply Known-Good Baseline Configuration",
+      "default": "disabled",
+      "danger": 25,
+      "pros": ["Reduces configuration drift", "Makes issues easier to reproduce/fix"],
+      "cons": ["Requires a maintained baseline", "Some edge cases need exceptions"]
+    },
+    {
+      "id": "logs",
+      "label": "Enable Basic Logging and Error Capture",
+      "default": "disabled",
+      "danger": 20,
+      "pros": ["Speeds up diagnosis", "Reduces guesswork and repeated steps"],
+      "cons": ["Consumes some disk space", "Users may not know where to find logs"]
+    },
+    {
+      "id": "restore-point",
+      "label": "Create Restore Point / Snapshot Before Changes",
+      "default": "disabled",
+      "danger": 35,
+      "pros": ["Rollback path if changes break the system", "Reduces fear of troubleshooting steps"],
+      "cons": ["Takes time and storage", "Not always reliable if system is already unstable"]
+    }
+  ],
+
+  "virusCleanup": [
+    {
+      "id": "offline-scan",
+      "label": "Run Offline Malware Scan (Boot/Rescue Scan)",
+      "default": "disabled",
+      "danger": 35,
+      "pros": ["Detects malware that hides in running OS", "Improves cleanup success rate"],
+      "cons": ["Requires boot media and time", "Can be intimidating for users"]
+    },
+    {
+      "id": "pup-removal",
+      "label": "Remove PUPs / Browser Hijackers",
+      "default": "disabled",
+      "danger": 25,
+      "pros": ["Reduces reinfection risk", "Restores normal browser behaviour"],
+      "cons": ["May remove 'bundled' apps the user expects", "Requires careful review of installed apps"]
+    },
+    {
+      "id": "browser-reset",
+      "label": "Reset Browser Extensions/Settings",
+      "default": "disabled",
+      "danger": 20,
+      "pros": ["Stops malicious redirects", "Removes shady extensions"],
+      "cons": ["User loses saved settings/customisations", "Needs re-login to some sites"]
+    },
+    {
+      "id": "patch-after",
+      "label": "Patch OS + Common Apps After Cleanup",
+      "default": "disabled",
+      "danger": 30,
+      "pros": ["Closes the exploit path used for compromise", "Reduces repeat incidents"],
+      "cons": ["Time-consuming", "Reboots may be required"]
+    },
+    {
+      "id": "safe-habits",
+      "label": "Enable Basic Protection (Defender/AV + SmartScreen)",
+      "default": "disabled",
+      "danger": 25,
+      "pros": ["Blocks common malicious downloads", "Reduces exposure to risky sites/files"],
+      "cons": ["False positives sometimes", "Users may disable if annoyed"]
+    }
+  ],
+
+  "dataBackup": [
+    {
+      "id": "3-2-1",
+      "label": "3-2-1 Backup Strategy",
+      "default": "disabled",
+      "danger": 45,
+      "pros": ["Strong resilience to ransomware and hardware failure", "Multiple recovery paths"],
+      "cons": ["Higher storage cost", "Requires discipline and routine"]
+    },
+    {
+      "id": "restore-test",
+      "label": "Restore Testing",
+      "default": "disabled",
+      "danger": 35,
+      "pros": ["Proves backups are usable", "Reduces recovery-time surprises"],
+      "cons": ["Operational time cost", "Needs documented steps"]
+    },
+    {
+      "id": "offsite",
+      "label": "Offsite Backup Copy",
+      "default": "disabled",
+      "danger": 40,
+      "pros": ["Protects against theft/fire/flood", "Prevents total site loss"],
+      "cons": ["Ongoing cost/bandwidth", "Needs encryption and access control"]
+    },
+    {
+      "id": "encryption",
+      "label": "Encrypt Backup Media",
+      "default": "disabled",
+      "danger": 25,
+      "pros": ["Protects sensitive data if media is lost", "Improves compliance posture"],
+      "cons": ["Key management required", "Recovery depends on key availability"]
+    },
+    {
+      "id": "backup-monitoring",
+      "label": "Backup Monitoring / Failure Alerts",
+      "default": "disabled",
+      "danger": 30,
+      "pros": ["Detects failures early", "Improves reliability over time"],
+      "cons": ["Alert configuration needed", "Can cause alert fatigue"]
+    }
+  ],
+
+  "computerRepair": [
+    {
+      "id": "diagnostics",
+      "label": "Run Hardware Diagnostics (Disk/RAM/SMART)",
+      "default": "disabled",
+      "danger": 30,
+      "pros": ["Identifies failing hardware early", "Prevents repeated time-wasting fixes"],
+      "cons": ["Takes time to run properly", "Results require interpretation"]
+    },
+    {
+      "id": "thermal",
+      "label": "Thermal Cleanup (Dust + Fans + Paste Check)",
+      "default": "disabled",
+      "danger": 25,
+      "pros": ["Prevents thermal shutdowns", "Extends component lifespan"],
+      "cons": ["Requires opening device", "Risk of damage if handled poorly"]
+    },
+    {
+      "id": "storage-health",
+      "label": "Replace Failing Drive / Migrate to SSD",
+      "default": "disabled",
+      "danger": 40,
+      "pros": ["Reduces crash/data loss risk", "Major performance improvement"],
+      "cons": ["Cost", "Requires migration planning"]
+    },
+    {
+      "id": "clean-os",
+      "label": "Clean OS Reinstall (Last Resort)",
+      "default": "disabled",
+      "danger": 35,
+      "pros": ["Removes deep software corruption", "Restores stable baseline"],
+      "cons": ["Time-consuming", "Requires backups and reinstalling apps"]
+    }
+  ],
+
+  "wifiInternet": [
+    {
+      "id": "router-update",
+      "label": "Update Router Firmware",
+      "default": "disabled",
+      "danger": 25,
+      "pros": ["Fixes security/stability issues", "Improves compatibility"],
+      "cons": ["Risk of misconfiguration", "Can cause downtime during update"]
+    },
+    {
+      "id": "wifi-channel",
+      "label": "Optimize Wi-Fi Channel / Band (2.4 vs 5GHz)",
+      "default": "disabled",
+      "danger": 20,
+      "pros": ["Reduces interference", "Improves reliability and speed"],
+      "cons": ["Requires testing", "Neighbour changes can reintroduce issues"]
+    },
+    {
+      "id": "wpa2wpa3",
+      "label": "Use WPA2/WPA3 + Disable WPS",
+      "default": "disabled",
+      "danger": 35,
+      "pros": ["Reduces unauthorized access risk", "Stops WPS brute forcing"],
+      "cons": ["Older devices may struggle", "Password updates can disrupt users"]
+    },
+    {
+      "id": "dns",
+      "label": "Set Reliable DNS + Basic Filtering (Optional)",
+      "default": "disabled",
+      "danger": 15,
+      "pros": ["Improves reliability", "Can block known malicious domains"],
+      "cons": ["May block false positives", "Requires documentation for changes"]
+    }
+  ],
+
+  "printerSetup": [
+    {
+      "id": "correct-driver",
+      "label": "Install Correct Driver / Use Vendor Package",
+      "default": "disabled",
+      "danger": 25,
+      "pros": ["Prevents feature loss and errors", "Improves stability"],
+      "cons": ["Driver packages can be bloated", "Vendor installers can add junk software"]
+    },
+    {
+      "id": "network-config",
+      "label": "Assign Stable Printer IP / DHCP Reservation",
+      "default": "disabled",
+      "danger": 30,
+      "pros": ["Stops printer 'disappearing' from network", "Consistent discovery and mapping"],
+      "cons": ["Requires router access", "Misconfig can break other devices"]
+    },
+    {
+      "id": "spooler",
+      "label": "Clear/Reset Print Spooler When Stuck",
+      "default": "disabled",
+      "danger": 20,
+      "pros": ["Fixes queued/stuck jobs quickly", "Restores printing without reinstall"],
+      "cons": ["Queued jobs are lost", "Can mask underlying driver/network issues"]
+    },
+    {
+      "id": "test-page",
+      "label": "Print Test Page + Scan Test (If Applicable)",
+      "default": "disabled",
+      "danger": 15,
+      "pros": ["Confirms end-to-end function", "Catches issues early"],
+      "cons": ["Takes a few minutes", "Requires user presence/confirmation"]
     }
   ]
 }
