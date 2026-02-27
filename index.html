@@ -1,76 +1,22 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- Head / Meta -->
   <meta charset="utf-8" />
   <title>Risk Analysis Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Styles -->
   <link rel="stylesheet" href="css/style.css" />
-
-  <!-- Simple inline favicon -->
   <link rel="icon" href="images/favicon/optimized/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/optimized/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/optimized/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/optimized/favicon-180x180.png">
-
 </head>
 
 <body>
-<div class="app">
-
-  <header class="header-centered">
-    <h1>Risk Analysis Tool</h1>
-
-    <!-- Theme toggle button -->
-    <div class="theme-toggle-wrapper">
-      <button
-        class="theme-toggle"
-        type="button"
-        aria-label="Toggle light/dark mode"
-        aria-pressed="false"
-        title="Toggle light/dark mode">
-        <span class="theme-toggle-icon" aria-hidden="true">☾</span>
-        <span class="theme-toggle-text">Theme</span>
-      </button>
-    </div>
-  </header>
-
-  <main class="split" id="root">
-
-    <section class="intro-hero">
-
-      <!-- Intro text pane -->
-      <div
-        class="intro-text"
-        data-pane="intro-text"
-        data-intro-key="home">
-      </div>
-
-      <!--
-        Intro cards container.
-        Cards are rendered dynamically by IntroCardsPane
-        using data from text/introCard.js.
-      -->
-      <div
-        class="risk-analysis-grid"
-        data-pane="intro-cards">
-      </div>
-
-    </section>
-
-  </main>
-
-</div>
-
-<!--
-  Single page entry point:
-    - loads shared helpers
-    - loads PanesCore
-    - loads pane implementations used on this page
-    - loads data sources (text/intro.js, text/introCard.js)
-    - loads theme behaviour
-  PanesCore auto-bootstraps panes on DOMContentLoaded.
--->
-<script type="module" src="js/pages/homePage.js"></script>
-
+  <!-- App Root -->
+  <div id="app"></div>
+  <!-- Page Module -->
+  <script type="module" src="js/pages/homePage.js"></script>
 </body>
 </html>

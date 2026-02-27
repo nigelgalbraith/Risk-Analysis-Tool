@@ -1,30 +1,40 @@
-// Apply theme to document and update toggle state
-function applyTheme(theme) {
-  const html = document.documentElement;
+const THEME_KEY = "theme";
+const THEME_LIGHT = "light";
+const THEME_DARK = "dark";
+const TOGGLE_SELECTOR = ".theme-toggle";
+const ICON_SELECTOR = ".theme-toggle-icon";
+
+
+function applyTheme(theme, rootDoc) {
+  const doc = rootDoc || document;
+  const html = doc.documentElement;
   html.dataset.theme = theme;
-  localStorage.setItem("theme", theme);
-  const btn = document.querySelector(".theme-toggle");
-  if (btn) {
-    const isLight = theme === "light";
-    btn.setAttribute("aria-pressed", String(isLight));
-    const icon = btn.querySelector(".theme-toggle-icon");
-    if (icon) icon.textContent = isLight ? "☀" : "☾";
-  }
-}
-
-// Initialize theme from saved/system preference and attach toggle listener
-function initThemeToggle() {
-  const saved = localStorage.getItem("theme");
-  const systemPrefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
-  const initial = saved || (systemPrefersLight ? "light" : "dark");
-  applyTheme(initial);
-  const btn = document.querySelector(".theme-toggle");
+  localStorage.setItem(THEME_KEY, theme);
+  const btn = doc.querySelector(TOGGLE_SELECTOR);
   if (!btn) return;
-  btn.addEventListener("click", () => {
-    const current = document.documentElement.dataset.theme || "dark";
-    applyTheme(current === "light" ? "dark" : "light");
-  });
+  const isLight = theme === THEME_LIGHT;
+  // DOM update keeps button state/icon in sync with active theme.
+  btn.setAttribute("aria-pressed", String(isLight));
+  const icon = btn.querySelector(ICON_SELECTOR);
+  if (icon) icon.textContent = isLight ? "☀" : "☾";
 }
 
-// Run on load (script is deferred)
-initThemeToggle();
+
+export function initThemeToggle(rootDoc) {
+  const doc = rootDoc || document;
+  const saved = localStorage.getItem(THEME_KEY);
+  const systemPrefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+  const initial = saved || (systemPrefersLight ? THEME_LIGHT : THEME_DARK);
+  applyTheme(initial, doc);
+  const btn = doc.querySelector(TOGGLE_SELECTOR);
+  if (!btn) return function noop() {};
+  const onClick = function () {
+    const current = doc.documentElement.dataset.theme || THEME_DARK;
+    applyTheme(current === THEME_LIGHT ? THEME_DARK : THEME_LIGHT, doc);
+  };
+  // Event wiring for manual theme toggling.
+  btn.addEventListener("click", onClick);
+  return function cleanup() {
+    btn.removeEventListener("click", onClick);
+  };
+}

@@ -1,16 +1,24 @@
-// site/js/RiskSummaryPane.js
-// PanesCore pane: data-pane="risk-summary"
-// Shows total danger (sum of disabled control danger values) + message based on configured ranges.
-
-import { Panes } from "../core/PanesCore.js";
+// IMPORTS
 import {
   loadState,
   fetchJSON,
   el,
+  clearHost,
+  addHostClasses,
+  renderHostMessage,
+  renderHostTitle,
   normalizeStatus,
   getDangerPercent
 } from "../core/helpers.js";
 
+// STATE
+const SUMMARY_CLASS = "pane-host--risk-summary";
+const SUMMARY_DATA_URL = "data/riskTables.json";
+const SUMMARY_MESSAGES_URL = "data/riskSummaryMessages.json";
+const SUMMARY_STORAGE_KEY = "riskAnalysisState.v1";
+
+// BUILD
+/** Finds the matching summary message range */
 function findMessage(ranges, total) {
   for (let i = 0; i < (ranges || []).length; i++) {
     const r = ranges[i] || {};
@@ -23,6 +31,9 @@ function findMessage(ranges, total) {
   return null;
 }
 
+
+
+/** Computes total disabled danger percentage */
 function computeTotalDisabledDanger(rows, catState) {
   let total = 0;
   (rows || []).forEach((row) => {
@@ -30,20 +41,18 @@ function computeTotalDisabledDanger(rows, catState) {
     const defaultStatus = normalizeStatus(row.default);
     const saved = catState ? catState[id] : null;
     const status = normalizeStatus(saved != null ? saved : defaultStatus);
-    /*
-      Only disabled controls contribute danger.
-      Enabled controls contribute 0%.
-    */
     if (status !== "enabled") total += getDangerPercent(row);
   });
   if (total > 100) total = 100;
   return total;
 }
 
-function render(container, total, msgObj) {
-  container.innerHTML = "";
-  container.appendChild(el("h2", "rt-title", "Risk Summary"));
 
+
+/** Renders summary table content */
+function renderSummary(host, total, msgObj) {
+  clearHost(host);
+  renderHostTitle(host, "Risk Summary", "rt-title");
   const table = el("table", "rt-table");
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
@@ -52,7 +61,6 @@ function render(container, total, msgObj) {
   });
   thead.appendChild(headRow);
   table.appendChild(thead);
-
   const tbody = document.createElement("tbody");
   const bodyRow = document.createElement("tr");
   bodyRow.appendChild(el("td", "rs-message", msgObj && msgObj.message ? msgObj.message : ""));
@@ -60,33 +68,32 @@ function render(container, total, msgObj) {
   bodyRow.appendChild(el("td", "rs-total", String(total) + "%"));
   tbody.appendChild(bodyRow);
   table.appendChild(tbody);
-
-  container.appendChild(table);
+  host.appendChild(table);
 }
 
-function init(container, api) {
-  const ds = container.dataset || {};
-  const riskKey = ds.riskKey || "";
-  const dataUrl = ds.dataUrl || "data/riskTables.json";
-  const messagesUrl = ds.messagesUrl || "data/riskSummaryMessages.json";
-  const storageKey = ds.storageKey || "riskAnalysisState.v1";
 
+
+/** Initializes the risk summary pane node */
+function initRiskSummaryPane(host, settings, api) {
+  const riskKey = settings.riskKey || "";
+  const dataUrl = settings.dataUrl || SUMMARY_DATA_URL;
+  const messagesUrl = settings.messagesUrl || SUMMARY_MESSAGES_URL;
+  const storageKey = settings.storageKey || SUMMARY_STORAGE_KEY;
   if (!riskKey) {
-    container.innerHTML = '<div class="rs-error">Missing data-risk-key.</div>';
+    renderHostMessage(host, "Missing data-risk-key.", "rs-error", true);
     return { destroy() {} };
   }
-
   let rowsCache = null;
   let rangesCache = null;
-
+  /** Rebuilds summary output from current state and cache */
   function rebuild() {
     const state = loadState(storageKey, {});
     const catState = (state && state[riskKey]) ? state[riskKey] : {};
     const total = computeTotalDisabledDanger(rowsCache || [], catState);
     const msgObj = findMessage(rangesCache || [], total);
-    render(container, total, msgObj);
+    renderSummary(host, total, msgObj);
   }
-
+  /** Loads source data used by summary rendering */
   function loadAll() {
     return Promise.all([fetchJSON(dataUrl), fetchJSON(messagesUrl)]).then((res) => {
       const allTables = res[0] || {};
@@ -94,28 +101,31 @@ function init(container, api) {
       rowsCache = allTables[riskKey] || [];
       rebuild();
     }).catch((err) => {
-      container.innerHTML = '<div class="rs-error">' + String(err && (err.message || err)) + "</div>";
+      renderHostMessage(host, String(err && (err.message || err)), "rs-error", true);
     });
   }
-
-  /*
-    Live update: RiskTablePane emits "risk:changed" whenever a control is toggled.
-    Rebuild from persisted state to stay consistent and simple.
-  */
   const onChanged = function (ev) {
     if (!ev || !ev.detail || ev.detail.category !== riskKey) return;
     rebuild();
   };
-
-  if (api && api.events && api.events.on) api.events.on("risk:changed", onChanged);
-
+  const offChanged = (api && api.events && api.events.on) ? api.events.on("risk:changed", onChanged) : null;
+  if (api && api.lifecycle && api.lifecycle.add && typeof offChanged === "function") api.lifecycle.add(offChanged);
   loadAll();
-
-  return { destroy() {} };
+  return {
+    destroy() {
+      if (typeof offChanged === "function") offChanged();
+    }
+  };
 }
 
-Panes.register("risk-summary", function (container, api) {
-  container.classList.add("pane");
-  container.classList.add("pane-host--risk-summary");
-  return init(container, api);
-});
+
+
+/** Builds the risk summary pane */
+export function buildRiskSummaryPane(options, api) {
+  const settings = options || {};
+  const node = document.createElement("div");
+  if (settings.id) node.id = settings.id;
+  addHostClasses(node, ["pane-host", SUMMARY_CLASS, "pane"]);
+  const instance = initRiskSummaryPane(node, settings, api || {});
+  return { node, destroy: instance.destroy };
+}

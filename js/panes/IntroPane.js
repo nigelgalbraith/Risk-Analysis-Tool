@@ -1,45 +1,37 @@
-// js/IntroPane.js
-//
-// Intro pane (PanesCore-scoped).
-// - Injects static HTML content from a global INTRO_TEXT map.
-// - No DOMContentLoaded scanning.
-// - Registered as: data-pane="intro-text"
-//
-// Usage:
-//   <div data-pane="intro-text" data-intro-key="chinese"></div>
-//
-// Requires intro.js to run first (it can set window.INTRO_TEXT).
+// IMPORTS
+import { NOOP_PANE, addHostClasses } from "../core/helpers.js";
 
-(function () {
-  'use strict';
+// STATE
+const INTRO_CLASS = "intro-text";
+const INTRO_KEY = "main";
 
-  function getIntroHTML(key) {
-    var map = (window && window.INTRO_TEXT) ? window.INTRO_TEXT : null;
-    if (!map) return '';
-    if (!key) key = 'main';
-    return map[key] || '';
-  }
+// BUILD
+/** Returns intro HTML for a given key */
+function getIntroHTML(key) {
+  const map = (window && window.INTRO_TEXT) ? window.INTRO_TEXT : null;
+  if (!map) return "";
+  if (!key) return map.main || "";
+  return map[key] || "";
+}
 
-  function initOne(container, api) {
-    // api is unused for now, but keeping signature consistent
-    var ds = container.dataset || {};
-    var key = ds.introKey || 'main';
-    var html = getIntroHTML(key);
-    container.innerHTML = html || '';
-    return {
-      destroy: function () {
-        // no-op (we leave content in place)
-      }
-    };
-  }
 
-  if (!window.Panes || !window.Panes.register) {
-    throw new Error('IntroPane requires PanesCore (Panes.register not found).');
-  }
 
-  window.Panes.register('intro-text', function (container, api) {
-    container.classList.add('pane');
-    container.classList.add('pane-intro-text');
-    return initOne(container, api);
-  });
-})();
+/** Initializes the intro pane node */
+function initIntroPane(host, settings, api) {
+  const key = settings.introKey || INTRO_KEY;
+  host.innerHTML = getIntroHTML(key) || "";
+  return NOOP_PANE;
+}
+
+
+
+/** Builds the intro pane */
+export function buildIntroPane(options, api) {
+  const settings = options || {};
+  const node = document.createElement("div");
+  node.className = settings.className || INTRO_CLASS;
+  if (settings.id) node.id = settings.id;
+  addHostClasses(node, ["pane-host", "pane-host--intro-text", "pane", "pane-intro-text"]);
+  const instance = initIntroPane(node, settings, api || {});
+  return { node, destroy: instance.destroy };
+}

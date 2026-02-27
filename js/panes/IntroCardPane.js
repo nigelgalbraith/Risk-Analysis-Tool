@@ -1,55 +1,49 @@
-(function () {
-  "use strict";
+// IMPORTS
+import { NOOP_PANE, addHostClasses, renderHostMessage } from "../core/helpers.js";
 
-  /**
-   * Renders the full set of intro cards into a single host element.
-   *
-   * Data source:
-   *   - window.introCards (loaded from text/introCard.js)
-   *
-   * Markup contract:
-   *   - Host element has data-pane="intro-cards"
-   *   - Host element is the grid container (CSS class already on it)
-   */
-  function init(container) {
-    var cards = window.introCards;
+// STATE
+const CARDS_CLASS = "risk-analysis-grid";
 
-    if (!cards) {
-      container.innerHTML = "<p>introCards data not loaded.</p>";
-      return { destroy: function () {} };
-    }
+// BUILD
+/** Builds the intro card list HTML */
+function buildCardsHTML(cards) {
+  return Object.keys(cards).map(function (key) {
+    const card = cards[key];
+    if (!card) return "";
+    const title = card.title || key;
+    const desc = card.description || "";
+    const link = card.link || "#";
+    return '<div class="risk-card"><a href="' + link + '"><h2>' + title + "</h2><p>" + desc + "</p></a></div>";
+  }).join("");
+}
 
-    var keys = Object.keys(cards);
 
-    if (!keys.length) {
-      container.innerHTML = "<p>No cards configured.</p>";
-      return { destroy: function () {} };
-    }
 
-    container.innerHTML = keys.map(function (key) {
-      var card = cards[key];
-      if (!card) return "";
-      var title = card.title || key;
-      var desc = card.description || "";
-      var link = card.link || "#";
-      return (
-        '<div class="risk-card">' +
-          '<a href="' + link + '">' +
-            "<h2>" + title + "</h2>" +
-            "<p>" + desc + "</p>" +
-          "</a>" +
-        "</div>"
-      );
-    }).join("");
-
-    return { destroy: function () {} };
+/** Initializes the intro cards pane node */
+function initIntroCardsPane(host, api) {
+  const cards = window.introCards;
+  if (!cards) {
+    renderHostMessage(host, "introCards data not loaded.", "", true, "p");
+    return NOOP_PANE;
   }
-
-  if (!window.Panes || !window.Panes.register) {
-    throw new Error("IntroCardsPane requires PanesCore.");
+  const keys = Object.keys(cards);
+  if (!keys.length) {
+    renderHostMessage(host, "No cards configured.", "", true, "p");
+    return NOOP_PANE;
   }
+  host.innerHTML = buildCardsHTML(cards);
+  return NOOP_PANE;
+}
 
-  window.Panes.register("intro-cards", function (container) {
-    return init(container);
-  });
-})();
+
+
+/** Builds the intro cards pane */
+export function buildIntroCardPane(options, api) {
+  const settings = options || {};
+  const node = document.createElement("div");
+  node.className = settings.className || CARDS_CLASS;
+  if (settings.id) node.id = settings.id;
+  addHostClasses(node, ["pane-host", "pane-host--intro-cards"]);
+  const instance = initIntroCardsPane(node, api || {});
+  return { node, destroy: instance.destroy };
+}

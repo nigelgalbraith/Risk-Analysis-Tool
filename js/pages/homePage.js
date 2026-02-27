@@ -1,51 +1,45 @@
-/*
-  homePage.js
+// IMPORTS
+import "../../data/intro.js";
+import "../../data/introCards.js";
+import { buildAppShell } from "../core/appShell.js";
+import { createEventBus } from "../core/eventBus.js";
+import { createPageLifecycle } from "../core/pageLifecycle.js";
+import { createSharedState } from "../core/sharedState.js";
+import { buildIntroPane } from "../panes/IntroPane.js";
+import { buildIntroCardPane } from "../panes/IntroCardPane.js";
+import { initThemeToggle } from "../themeToggle.js";
 
-  Single entry point for index.html.
+// STATE
+const HOME_TITLE = "Risk Analysis Tool";
+const HOME_INTRO_KEY = "home";
+const HOME_STATE_ENTRIES = [["page", "home"]];
 
-  Responsibilities:
-    - Load shared helpers
-    - Load pane framework
-    - Load text data sources required by panes
-    - Load pane implementations used on the home page
-    - Load theme behaviour
-    - Allow PanesCore to auto-bootstrap on DOMContentLoaded
+// BUILD
+/** Initializes the home page orchestrator */
+function initHomePage() {
+  const lifecycle = createPageLifecycle();
+  const shell = buildAppShell({ pageTitle: HOME_TITLE, activeNavKey: null });
+  const events = createEventBus();
+  const state = createSharedState(events, HOME_STATE_ENTRIES);
+  const api = { events, state, lifecycle };
+  const introSection = document.createElement("section");
+  introSection.className = "intro-hero";
+  const introPane = buildIntroPane({ introKey: HOME_INTRO_KEY, className: "intro-text" }, api);
+  introSection.appendChild(introPane.node);
+  lifecycle.add(introPane.destroy);
+  const cardPane = buildIntroCardPane({ className: "risk-analysis-grid" }, api);
+  introSection.appendChild(cardPane.node);
+  lifecycle.add(cardPane.destroy);
+  shell.contentHost.appendChild(introSection);
+  const cleanupTheme = initThemeToggle(document);
+  lifecycle.add(cleanupTheme);
+  lifecycle.add(() => events.clear());
+  const onPageHide = function () {
+    lifecycle.destroy();
+  };
+  window.addEventListener("pagehide", onPageHide);
+  lifecycle.add(() => window.removeEventListener("pagehide", onPageHide));
+}
 
-  Notes:
-    - No dynamic dataset configuration is required on this page.
-    - PanesCore automatically instantiates panes marked with data-pane.
-    - This file exists for architectural consistency with other pages.
-*/
 
-import "../core/helpers.js";
-import "../core/PanesCore.js";
-
-/*
-  Data sources:
-  These provide the content used by IntroPane and IntroCardPane.
-*/
-import "../../text/intro.js";
-import "../../text/introCards.js";
-
-/*
-  Pane implementations:
-  These register themselves with PanesCore when imported.
-*/
-import "../panes/IntroPane.js";
-import "../panes/IntroCardPane.js";
-
-/*
-  Theme behaviour:
-  Attaches click handler + persisted preference behaviour.
-*/
-import "../themeToggle.js";
-
-/*
-  No explicit initialization required.
-
-  PanesCore:
-    - Registers panes when modules are imported.
-    - Bootstraps automatically on DOMContentLoaded.
-
-  This file intentionally contains no runtime logic.
-*/
+initHomePage();

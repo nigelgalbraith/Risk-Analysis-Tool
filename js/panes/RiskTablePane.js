@@ -1,83 +1,72 @@
-// site/js/RiskTablePane.js
-// PanesCore pane: data-pane="risk-table"
-// Loads risk control definitions from JSON and persists user selections in localStorage.
-
-import { Panes } from "../core/PanesCore.js";
+// IMPORTS
 import {
   loadState,
   saveState,
   fetchJSON,
   el,
+  clearHost,
+  addHostClasses,
+  renderHostMessage,
+  renderHostTitle,
   normalizeStatus,
   getDangerPercent
 } from "../core/helpers.js";
 
-/* Ensures category state exists and returns it. */
+// STATE
+const TABLE_CLASS = "pane-host--risk-table";
+const TABLE_TITLE = "Risk Table";
+const TABLE_DATA_URL = "data/riskTables.json";
+const TABLE_STORAGE_KEY = "riskAnalysisState.v1";
+
+// BUILD
+/** Gets or initializes state for a risk category */
 function getOrCreateCategoryState(stateObj, categoryKey) {
   if (!stateObj[categoryKey] || typeof stateObj[categoryKey] !== "object") stateObj[categoryKey] = {};
   return stateObj[categoryKey];
 }
 
-/* Renders a bullet list from an array of strings. */
+
+
+/** Creates a list element from plain text items */
 function makeList(items) {
   const ul = el("ul", "rt-list");
-  (items || []).forEach((t) => {
+  (items || []).forEach((text) => {
     const li = document.createElement("li");
-    li.textContent = String(t);
+    li.textContent = String(text);
     ul.appendChild(li);
   });
   return ul;
 }
 
-/**
- * Applies strike styling:
- *  - Pros struck when control is disabled
- *  - Cons struck when control is enabled
- */
+
+
+/** Applies strike styling based on enabled status */
 function applyStrike(prosCell, consCell, status) {
   const isEnabled = status === "enabled";
   if (prosCell) prosCell.classList.toggle("rt-strike", !isEnabled);
   if (consCell) consCell.classList.toggle("rt-strike", isEnabled);
 }
 
-/**
- * Initializes the risk table pane inside the given container.
- *
- * Data attributes supported:
- *  - data-risk-key   (required): key used to select a table from the JSON file
- *  - data-title      (optional): table title shown above the table
- *  - data-data-url   (optional): JSON source (default: data/riskTables.json)
- *  - data-storage-key(optional): localStorage key for persistence
- */
-function init(container, api) {
-  const ds = container.dataset || {};
-  const riskKey = ds.riskKey || ds.category || "";
-  const title = ds.title || "Risk Table";
-  const dataUrl = ds.dataUrl || "data/riskTables.json";
-  const storageKey = ds.storageKey || "riskAnalysisState.v1";
 
-  container.innerHTML = "";
-  container.appendChild(el("h2", "rt-title", title));
 
+/** Initializes the risk table pane node */
+function initRiskTablePane(host, settings, api) {
+  const riskKey = settings.riskKey || settings.category || "";
+  const title = settings.title || TABLE_TITLE;
+  const dataUrl = settings.dataUrl || TABLE_DATA_URL;
+  const storageKey = settings.storageKey || TABLE_STORAGE_KEY;
+  clearHost(host);
+  renderHostTitle(host, title, "rt-title");
   if (!riskKey) {
-    const warn = el("div", "rt-error");
-    warn.textContent = 'Missing data-risk-key (e.g. data-risk-key="security").';
-    container.appendChild(warn);
+    renderHostMessage(host, 'Missing data-risk-key (e.g. data-risk-key="security").', "rt-error", false);
     return { destroy() {} };
   }
-
-  /* Persistent state structure:
-      state[categoryKey][controlId] = "enabled" | "disabled" */
   const state = loadState(storageKey, {});
   const catState = getOrCreateCategoryState(state, riskKey);
-
-  /* destroyFns stores cleanup handlers for all event listeners.*/
   let destroyFns = [];
-
+  /** Renders table rows for the configured risk key */
   function renderTable(defRows) {
     const table = el("table", "rt-table");
-
-    /* Table header. */
     const thead = document.createElement("thead");
     const trh = document.createElement("tr");
     ["Control", "Status", "Pros", "Cons", "Danger %"].forEach((name) => {
@@ -85,30 +74,23 @@ function init(container, api) {
     });
     thead.appendChild(trh);
     table.appendChild(thead);
-
-    /* Table body. */
     const tbody = document.createElement("tbody");
     (defRows || []).forEach((row) => {
       let id = String(row.id || "").trim();
       const label = String(row.label || row.name || id || "Unnamed");
       if (!id) id = label.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
-
       const defaultStatus = normalizeStatus(row.default);
       const saved = catState[id];
       const status = normalizeStatus(saved != null ? saved : defaultStatus);
-
       const tr = document.createElement("tr");
       tr.appendChild(el("td", "rt-control", label));
-
-      /* Status radios. */
       const tdStatus = el("td", "rt-status");
       const groupName = "rt_" + riskKey + "_" + id;
-
       let tdPros = null;
       let tdCons = null;
       let tdDanger = null;
       const baseDanger = getDangerPercent(row);
-
+      /** Builds one status radio control */
       function makeRadio(value, text) {
         const lbl = el("label", "rt-radio");
         const input = document.createElement("input");
@@ -116,13 +98,10 @@ function init(container, api) {
         input.name = groupName;
         input.value = value;
         input.checked = status === value;
-
         const span = document.createElement("span");
         span.textContent = text;
-
         lbl.appendChild(input);
         lbl.appendChild(span);
-
         const onChange = function () {
           if (!input.checked) return;
           const newStatus = normalizeStatus(input.value);
@@ -130,70 +109,60 @@ function init(container, api) {
           saveState(storageKey, state);
           applyStrike(tdPros, tdCons, newStatus);
           if (tdDanger) tdDanger.textContent = (newStatus === "enabled" ? 0 : baseDanger) + "%";
-          /* Optional event hook for downstream panes (e.g., future risk matrix).*/
-          if (api && api.events && api.events.emit) {
-            api.events.emit("risk:changed", { category: riskKey, id, value: newStatus });
-          }
+          if (api && api.events && api.events.emit) api.events.emit("risk:changed", { category: riskKey, id, value: newStatus });
         };
-
         input.addEventListener("change", onChange);
         destroyFns.push(() => input.removeEventListener("change", onChange));
         return lbl;
       }
-
       tdStatus.appendChild(makeRadio("enabled", "Enabled"));
       tdStatus.appendChild(makeRadio("disabled", "Disabled"));
       tr.appendChild(tdStatus);
-
-      /* Pros / Cons cells. */
       tdPros = document.createElement("td");
       tdPros.appendChild(makeList(row.pros || []));
       tr.appendChild(tdPros);
-
       tdCons = document.createElement("td");
       tdCons.appendChild(makeList(row.cons || []));
       tr.appendChild(tdCons);
-
       applyStrike(tdPros, tdCons, status);
-
-      /* Danger column (0 if enabled, JSON value if disabled). */
       const actualDanger = status === "enabled" ? 0 : baseDanger;
       tdDanger = el("td", "rt-danger", String(actualDanger) + "%");
       tr.appendChild(tdDanger);
-
       tbody.appendChild(tr);
     });
-
     table.appendChild(tbody);
-    container.appendChild(table);
+    host.appendChild(table);
   }
-
   fetchJSON(dataUrl).then((allTables) => {
     const rows = allTables && allTables[riskKey] ? allTables[riskKey] : null;
     if (!rows || rows.length === 0) {
-      const empty = el("div", "rt-error");
-      empty.textContent = 'No rows found for "' + riskKey + '" in ' + dataUrl + ".";
-      container.appendChild(empty);
+      renderHostMessage(host, 'No rows found for "' + riskKey + '" in ' + dataUrl + ".", "rt-error", false);
       return;
     }
     renderTable(rows);
   }).catch((err) => {
-    const box = el("div", "rt-error");
-    box.textContent = String(err && (err.message || err));
-    container.appendChild(box);
+    renderHostMessage(host, String(err && (err.message || err)), "rt-error", false);
   });
-
   return {
     destroy() {
-      destroyFns.forEach((fn) => { try { fn(); } catch (_e) {} });
+      destroyFns.forEach((fn) => {
+        try {
+          fn();
+        } catch (_e) {}
+      });
       destroyFns = [];
     }
   };
 }
 
-/* Pane registration entry point. */
-Panes.register("risk-table", function (container, api) {
-  container.classList.add("pane");
-  container.classList.add("pane-host--risk-table");
-  return init(container, api);
-});
+
+
+/** Builds the risk table pane */
+export function buildRiskTablePane(options, api) {
+  const settings = options || {};
+  const node = document.createElement("div");
+  if (settings.id) node.id = settings.id;
+  addHostClasses(node, ["pane-host", TABLE_CLASS, "pane"]);
+  const instance = initRiskTablePane(node, settings, api || {});
+  return { node, destroy: instance.destroy };
+}

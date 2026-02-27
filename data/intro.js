@@ -1,4 +1,4 @@
-// /text/intro.js
+// /data/intro.js
 
 window.INTRO_TEXT = {
   home: `

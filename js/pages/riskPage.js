@@ -1,147 +1,84 @@
-/*
-  riskPage.js
+// IMPORTS
+import "../../data/intro.js";
+import { buildAppShell } from "../core/appShell.js";
+import { createEventBus } from "../core/eventBus.js";
+import { createPageLifecycle } from "../core/pageLifecycle.js";
+import { createSharedState } from "../core/sharedState.js";
+import { buildIntroPane } from "../panes/IntroPane.js";
+import { buildRiskTablePane } from "../panes/RiskTablePane.js";
+import { buildRiskSummaryPane } from "../panes/RiskSummaryPane.js";
+import { initThemeToggle } from "../themeToggle.js";
 
-  Single entry point for riskPage.html.
+// STATE
+const BASE_TITLE = "Risk Analysis";
+const BACK_NAV_KEY = "back";
+const MISSING_PARAM_HTML = "<p>Missing required URL parameter: <code>?service=</code></p>";
+const RISK_STATE_ENTRIES = [["page", "risk"]];
 
-  Responsibilities:
-    - Read service key from URL
-    - Assign service key to pane host data attributes
-    - Update page heading and document title
-    - Load theme behaviour
-    - Load pane framework + pane implementations + text data
-*/
+// BUILD
+/** Reads the service key from the current URL */
+function getServiceKey() {
+  const params = new URLSearchParams(window.location.search);
+  return (params.get("service") || "").trim();
+}
 
-import "../core/helpers.js";
-import "../core/PanesCore.js";
-import "../panes/RiskTablePane.js";
-import "../panes/RiskSummaryPane.js";
-import "../../text/intro.js";
-import "../panes/IntroPane.js";
-import "../themeToggle.js";
 
-(function () {
-  "use strict";
 
-  /**
-   * Extracts the service key from the URL query string.
-   *
-   * Expected format:
-   *   riskPage.html?service=<key>
-   *
-   * Returns:
-   *   - Lowercased service key string
-   *   - Empty string if parameter is missing
-   *
-   * Note:
-   *   The returned key must match keys defined in:
-   *     - text/intro.js
-   *     - risk table data source used by RiskTablePane
-   */
-  function get_service_key() {
-    var params = new URLSearchParams(window.location.search);
-    var raw = (params.get("service") || "").trim();
-    return raw;
+/** Converts a value to display title case */
+function titleCase(value) {
+  return (value || "").replace(/(^|\s|[-_])\w/g, function (match) {
+    return match.toUpperCase();
+  });
+}
+
+
+
+/** Initializes the risk page orchestrator */
+function initRiskPage() {
+  const lifecycle = createPageLifecycle();
+  const shell = buildAppShell({ pageTitle: BASE_TITLE, activeNavKey: BACK_NAV_KEY });
+  const events = createEventBus();
+  const state = createSharedState(events, RISK_STATE_ENTRIES);
+  const api = { events, state, lifecycle };
+  const cleanupTheme = initThemeToggle(document);
+  lifecycle.add(cleanupTheme);
+  lifecycle.add(() => events.clear());
+  const onPageHide = function () {
+    lifecycle.destroy();
+  };
+  window.addEventListener("pagehide", onPageHide);
+  lifecycle.add(() => window.removeEventListener("pagehide", onPageHide));
+  const service = getServiceKey();
+  const heading = shell.header.querySelector("#pageTitle");
+  if (!service) {
+    const introHost = document.createElement("div");
+    introHost.className = "intro-text";
+    introHost.id = "introHost";
+    introHost.innerHTML = MISSING_PARAM_HTML;
+    shell.contentHost.appendChild(introHost);
+    const tableHost = document.createElement("div");
+    tableHost.id = "tableHost";
+    shell.contentHost.appendChild(tableHost);
+    const summaryHost = document.createElement("div");
+    summaryHost.id = "summaryHost";
+    shell.contentHost.appendChild(summaryHost);
+    if (heading) heading.textContent = BASE_TITLE;
+    document.title = BASE_TITLE;
+    return;
   }
+  const displayName = titleCase(service);
+  if (heading) heading.textContent = displayName + " Risk Analysis";
+  document.title = displayName + " Risk Analysis";
+  const introPane = buildIntroPane({ introKey: service, className: "intro-text", id: "introHost" }, api);
+  shell.contentHost.appendChild(introPane.node);
+  lifecycle.add(introPane.destroy);
+  const tablePane = buildRiskTablePane({ id: "tableHost", riskKey: service, title: titleCase(service) + " Risk Table" }, api);
+  shell.contentHost.appendChild(tablePane.node);
+  lifecycle.add(tablePane.destroy);
+  const summaryPane = buildRiskSummaryPane({ id: "summaryHost", riskKey: service }, api);
+  shell.contentHost.appendChild(summaryPane.node);
+  lifecycle.add(summaryPane.destroy);
+}
 
-  /**
-   * Converts a string to display-friendly title case.
-   *
-   * Used for:
-   *   - Page heading
-   *   - Document title
-   *   - Risk table display title
-   */
-  function title_case(s) {
-    return (s || "").replace(/(^|\s|[-_])\w/g, function (m) {
-      return m.toUpperCase();
-    });
-  }
 
-  /**
-   * Initializes the dynamic page configuration.
-   *
-   * Responsibilities:
-   *   1. Read service key from URL
-   *   2. Assign service key to pane host data attributes
-   *   3. Update page heading and document title
-   *
-   * Execution order requirement:
-   *   This script must load BEFORE PanesCore.js,
-   *   so that panes receive correct dataset values during bootstrap.
-   */
-  function main() {
-    var service = get_service_key();
-
-    var intro_host = document.getElementById("introHost");
-    var table_host = document.getElementById("tableHost");
-    var summary_host = document.getElementById("summaryHost");
-    var page_title = document.getElementById("pageTitle");
-
-    /*
-      If no service parameter is provided,
-      render a minimal error state and prevent pane initialization
-      from running with undefined keys.
-    */
-    if (!service) {
-      if (page_title) page_title.textContent = "Risk Analysis";
-      document.title = "Risk Analysis";
-
-      if (intro_host) {
-        intro_host.innerHTML =
-          "<p>Missing required URL parameter: <code>?service=</code></p>";
-      }
-
-      return;
-    }
-
-    /*
-      Configure Intro Pane:
-      Sets data-intro-key which IntroPane reads
-      during PanesCore bootstrap.
-    */
-    if (intro_host && intro_host.dataset) {
-      intro_host.dataset.introKey = service;
-    }
-
-    /*
-      Configure Risk Table Pane:
-      Sets:
-        - data-risk-key (data source key)
-        - data-title (display title)
-    */
-    if (table_host && table_host.dataset) {
-      table_host.dataset.riskKey = service;
-      table_host.dataset.title =
-        title_case(service) + " Risk Table";
-    }
-
-    /*
-      Configure Risk Summary Pane:
-      Sets data-risk-key which RiskSummaryPane reads
-      during PanesCore bootstrap.
-    */
-    if (summary_host && summary_host.dataset) {
-      summary_host.dataset.riskKey = service;
-    }
-
-    /*
-      Update visible page heading and browser tab title.
-    */
-    if (page_title) {
-      page_title.textContent =
-        title_case(service) + " Risk Analysis";
-    }
-
-    document.title =
-      title_case(service) + " Risk Analysis";
-  }
-
-  /*
-    Execute immediately.
-    No DOMContentLoaded listener required because:
-      - Script is loaded before PanesCore
-      - Only sets dataset values
-      - PanesCore handles DOMContentLoaded bootstrap
-  */
-  main();
-})();
+initRiskPage();

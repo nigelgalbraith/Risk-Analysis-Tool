@@ -114,7 +114,7 @@ Example:
 State is stored in:
 
 ```
-localStorage key: riskAnalysisState.v1
+localStorage key: riskAnalysisState
 ```
 
 Structure:
@@ -158,7 +158,11 @@ RiskAnalysis/
 │
 ├── js/
 │   ├── core/
-│   │   └── PanesCore.js
+│   │   ├── appShell.js
+│   │   ├── eventBus.js
+│   │   ├── pageLifecycle.js
+│   │   ├── pageRuntime.js
+│   │   └── sharedState.js
 │   ├── panes/
 │   │   ├── IntroPane.js
 │   │   ├── CardsPane.js
@@ -218,9 +222,9 @@ http://localhost:8000/index.html
 
 1. Add a new key to `data/riskTables.json`.
 
-2. Add a matching card in `text/introCards.js`.
+2. Add a matching card in `data/introCards.js`.
 
-3. (Optional) Add intro content in `text/intro.js`.
+3. (Optional) Add intro content in `data/intro.js`.
 
 No changes to HTML or core JS are required.
 

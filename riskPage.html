@@ -1,23 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- Head / Meta -->
   <meta charset="utf-8" />
-
-  <!--
-    Single service-driven risk analysis page.
-
-    The service is selected via query string:
-      riskPage.html?service=security
-      riskPage.html?service=backups
-
-    riskPage.js reads the service key and sets data attributes on pane hosts
-    before PanesCore bootstraps panes on DOMContentLoaded.
-  -->
   <title>Risk Analysis</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Styles -->
   <link rel="stylesheet" href="css/style.css" />
-
-  <!-- Simple inline favicon -->
   <link rel="icon" href="images/favicon/optimized/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/optimized/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/optimized/favicon-16x16.png">
@@ -25,76 +14,9 @@
 </head>
 
 <body>
-<div class="app">
-
-  <header class="header-centered">
-    <!-- Updated at runtime to "<Service> Risk Analysis" -->
-    <h1 id="pageTitle">Risk Analysis</h1>
-
-    <!-- Theme toggle UI; themeToggle.js attaches behaviour to this button -->
-    <div class="theme-toggle-wrapper">
-      <button
-        class="theme-toggle"
-        type="button"
-        aria-label="Toggle light/dark mode"
-        aria-pressed="false"
-        title="Toggle light/dark mode">
-        <span class="theme-toggle-icon" aria-hidden="true">☾</span>
-        <span class="theme-toggle-text">Theme</span>
-      </button>
-    </div>
-
-    <nav class="nav">
-      <div class="nav-links">
-        <a href="index.html">Back to Main Menu</a>
-      </div>
-    </nav>
-  </header>
-
-  <main class="split" id="root">
-
-    <!--
-      Pane host: Intro text
-      riskPage.js sets: data-intro-key = service key (e.g. "security", "backups")
-      IntroPane reads data-intro-key and renders matching text from text/intro.js
-    -->
-    <div
-      class="intro-text"
-      id="introHost"
-      data-pane="intro-text">
-    </div>
-
-    <!--
-      Pane host: Risk table
-      riskPage.js sets:
-        - data-risk-key = service key
-        - data-title    = "<Service> Risk Table"
-      RiskTablePane reads data-risk-key and renders matching table configuration/data.
-    -->
-    <div
-      id="tableHost"
-      data-pane="risk-table">
-    </div>
-
-
-    <div
-      data-pane="risk-summary"
-      id="summaryHost">
-    </div>
-
-  </main>
-
-  <!--
-    Single page entry point:
-    - reads ?service=
-    - sets data attributes on pane hosts
-    - updates page title text
-    - loads theme behaviour
-    - loads PanesCore + pane implementations + text/intro.js
-    Must run before PanesCore bootstraps panes on DOMContentLoaded.
-  -->
-
+  <!-- App Root -->
+  <div id="app"></div>
+  <!-- Page Module -->
   <script type="module" src="js/pages/riskPage.js"></script>
-
 </body>
 </html>

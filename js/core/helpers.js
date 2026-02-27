@@ -1,54 +1,76 @@
-// js/core/helpers.js
-// -----------------------------------------------------------------------------
-// Shared helper utilities used across panes.
-//
-// Purpose:
-//   - Eliminate duplicated utility logic
-//   - Keep panes focused on rendering + behaviour
-//   - Provide safe, small, dependency-free helpers
-//
-// NOTE:
-//   This is an ES module. Import what you need from panes/pages.
-// -----------------------------------------------------------------------------
+export const NOOP_PANE = Object.freeze({ destroy() {} });
 
-/* Parses JSON safely with a fallback value. */
+
 export function safeJSONParse(raw, fallback = null) {
-  try { return JSON.parse(raw); } catch (_e) { return fallback; }
+  try {
+    return JSON.parse(raw);
+  } catch (_e) {
+    return fallback;
+  }
 }
 
-/* Loads persisted state from localStorage. */
+
 export function loadState(storageKey, fallback = {}) {
   const raw = window.localStorage.getItem(storageKey);
   if (!raw) return fallback;
   return safeJSONParse(raw, fallback);
 }
 
-/* Saves state to localStorage. */
+
 export function saveState(storageKey, stateObj) {
   window.localStorage.setItem(storageKey, JSON.stringify(stateObj));
 }
 
-/* Fetches JSON from a URL and returns a parsed object. */
+
 export async function fetchJSON(url) {
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to load JSON: ${url} (${res.status})`);
   return res.json();
 }
 
-/* Creates a DOM element with optional class and text. */
+
 export function el(tag, cls = "", text = "") {
-  const n = document.createElement(tag);
-  if (cls) n.className = cls;
-  if (text != null && text !== "") n.textContent = String(text);
-  return n;
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text != null && text !== "") node.textContent = String(text);
+  return node;
 }
 
-/* Normalizes status values to the supported set. */
+
+export function clearHost(host) {
+  host.innerHTML = "";
+  return host;
+}
+
+
+export function addHostClasses(host, classes) {
+  (classes || []).forEach((name) => {
+    if (name) host.classList.add(name);
+  });
+  return host;
+}
+
+
+export function renderHostMessage(host, message, className, replace = true, tag = "div") {
+  if (replace) clearHost(host);
+  const box = el(tag, className, message);
+  host.appendChild(box);
+  return box;
+}
+
+
+export function renderHostTitle(host, title, className = "rt-title") {
+  const heading = el("h2", className, title);
+  host.appendChild(heading);
+  return heading;
+}
+
+
 export function normalizeStatus(value) {
   return value === "enabled" ? "enabled" : "disabled";
 }
 
-/* Extracts a numeric danger percentage (0–100) from a row. */
+
 export function getDangerPercent(row) {
   const n = Number(row && row.danger);
   if (!isFinite(n)) return 0;
