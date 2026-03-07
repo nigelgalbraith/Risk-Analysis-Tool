@@ -8,7 +8,8 @@ import {
   renderHostMessage,
   renderHostTitle,
   normalizeStatus,
-  getDangerPercent
+  getRiskScore,
+  computeMaxRiskScore
 } from "../core/helpers.js";
 
 // STATE
@@ -19,53 +20,59 @@ const SUMMARY_STORAGE_KEY = "riskAnalysisState.v1";
 
 // BUILD
 /** Finds the matching summary message range */
-function findMessage(ranges, total) {
+function findMessage(ranges, ratio) {
   for (let i = 0; i < (ranges || []).length; i++) {
     const r = ranges[i] || {};
-    let min = Number(r.min);
-    let max = Number(r.max);
+    let min = Number(r.minRatio);
+    let max = Number(r.maxRatio);
     if (!isFinite(min)) min = 0;
-    if (!isFinite(max)) max = 100;
-    if (total >= min && total <= max) return r;
+    if (!isFinite(max)) max = 1;
+    if (ratio >= min && ratio <= max) return r;
   }
   return null;
 }
 
 
-
-/** Computes total disabled danger percentage */
-function computeTotalDisabledDanger(rows, catState) {
+/** Computes total disabled risk score */
+function computeTotalDisabledRiskScore(rows, catState) {
   let total = 0;
   (rows || []).forEach((row) => {
     const id = String(row.id || "").trim();
     const defaultStatus = normalizeStatus(row.default);
     const saved = catState ? catState[id] : null;
     const status = normalizeStatus(saved != null ? saved : defaultStatus);
-    if (status !== "enabled") total += getDangerPercent(row);
+    if (status !== "enabled") total += getRiskScore(row);
   });
-  if (total > 100) total = 100;
   return total;
 }
 
 
-
 /** Renders summary table content */
-function renderSummary(host, total, msgObj) {
+function renderSummary(host, total, maxScore, msgObj) {
   clearHost(host);
   renderHostTitle(host, "Risk Summary", "rt-title");
   const table = el("table", "rt-table");
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
-  ["Message", "Risk Level", "Total Danger"].forEach((text) => {
+  ["Message", "Risk Level", "Total Risk Score"].forEach((text) => {
     headRow.appendChild(el("th", "", text));
   });
   thead.appendChild(headRow);
   table.appendChild(thead);
   const tbody = document.createElement("tbody");
   const bodyRow = document.createElement("tr");
-  bodyRow.appendChild(el("td", "rs-message", msgObj && msgObj.message ? msgObj.message : ""));
-  bodyRow.appendChild(el("td", "rs-level", msgObj && msgObj.title ? msgObj.title : ""));
-  bodyRow.appendChild(el("td", "rs-total", String(total) + "%"));
+  const msgCell = el("td", "rs-message", msgObj && msgObj.message ? msgObj.message : "");
+  const levelCell = el("td", "rs-level", msgObj && msgObj.title ? msgObj.title : "");
+  const totalCell = el("td", "rs-total", `${total} / ${maxScore}`);
+  if (msgObj && msgObj.color) {
+    levelCell.style.color = msgObj.color;
+    totalCell.style.color = msgObj.color;
+    levelCell.style.fontWeight = "bold";
+    totalCell.style.fontWeight = "bold";
+  }
+  bodyRow.appendChild(msgCell);
+  bodyRow.appendChild(levelCell);
+  bodyRow.appendChild(totalCell);
   tbody.appendChild(bodyRow);
   table.appendChild(tbody);
   host.appendChild(table);
@@ -89,9 +96,11 @@ function initRiskSummaryPane(host, settings, api) {
   function rebuild() {
     const state = loadState(storageKey, {});
     const catState = (state && state[riskKey]) ? state[riskKey] : {};
-    const total = computeTotalDisabledDanger(rowsCache || [], catState);
-    const msgObj = findMessage(rangesCache || [], total);
-    renderSummary(host, total, msgObj);
+    const total = computeTotalDisabledRiskScore(rowsCache || [], catState);
+    const maxScore = computeMaxRiskScore(rowsCache || []);
+    const ratio = maxScore > 0 ? total / maxScore : 0;
+    const msgObj = findMessage(rangesCache || [], ratio);
+    renderSummary(host, total, maxScore, msgObj);
   }
   /** Loads source data used by summary rendering */
   function loadAll() {

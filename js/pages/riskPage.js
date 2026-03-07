@@ -23,14 +23,16 @@ function getServiceKey() {
 }
 
 
-
 /** Converts a value to display title case */
 function titleCase(value) {
-  return (value || "").replace(/(^|\s|[-_])\w/g, function (match) {
-    return match.toUpperCase();
-  });
+  return String(value || "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, function (match) {
+      return match.toUpperCase();
+    })
+    .trim();
 }
-
 
 
 /** Initializes the risk page orchestrator */

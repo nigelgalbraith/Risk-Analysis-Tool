@@ -9,7 +9,7 @@ import {
   renderHostMessage,
   renderHostTitle,
   normalizeStatus,
-  getDangerPercent
+  getRiskScore
 } from "../core/helpers.js";
 
 // STATE
@@ -69,7 +69,7 @@ function initRiskTablePane(host, settings, api) {
     const table = el("table", "rt-table");
     const thead = document.createElement("thead");
     const trh = document.createElement("tr");
-    ["Control", "Status", "Pros", "Cons", "Danger %"].forEach((name) => {
+    ["Control", "Status", "Pros", "Cons", "Risk Score"].forEach((name) => {
       trh.appendChild(el("th", "", name));
     });
     thead.appendChild(trh);
@@ -88,8 +88,8 @@ function initRiskTablePane(host, settings, api) {
       const groupName = "rt_" + riskKey + "_" + id;
       let tdPros = null;
       let tdCons = null;
-      let tdDanger = null;
-      const baseDanger = getDangerPercent(row);
+      let tdRisk = null;
+      const baseRisk = getRiskScore(row);
       /** Builds one status radio control */
       function makeRadio(value, text) {
         const lbl = el("label", "rt-radio");
@@ -108,7 +108,7 @@ function initRiskTablePane(host, settings, api) {
           catState[id] = newStatus;
           saveState(storageKey, state);
           applyStrike(tdPros, tdCons, newStatus);
-          if (tdDanger) tdDanger.textContent = (newStatus === "enabled" ? 0 : baseDanger) + "%";
+          if (tdRisk) tdRisk.textContent = (newStatus === "enabled" ? 0 : baseRisk);
           if (api && api.events && api.events.emit) api.events.emit("risk:changed", { category: riskKey, id, value: newStatus });
         };
         input.addEventListener("change", onChange);
@@ -125,9 +125,9 @@ function initRiskTablePane(host, settings, api) {
       tdCons.appendChild(makeList(row.cons || []));
       tr.appendChild(tdCons);
       applyStrike(tdPros, tdCons, status);
-      const actualDanger = status === "enabled" ? 0 : baseDanger;
-      tdDanger = el("td", "rt-danger", String(actualDanger) + "%");
-      tr.appendChild(tdDanger);
+      const actualRisk = status === "enabled" ? 0 : baseRisk;
+      tdRisk = el("td", "rt-riskScore", String(actualRisk));
+      tr.appendChild(tdRisk);
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);

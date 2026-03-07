@@ -71,10 +71,19 @@ export function normalizeStatus(value) {
 }
 
 
-export function getDangerPercent(row) {
-  const n = Number(row && row.danger);
+export function getRiskScore(row) {
+  const n = Number(row && row.riskScore);
   if (!isFinite(n)) return 0;
   if (n < 0) return 0;
   if (n > 100) return 100;
   return Math.round(n);
+}
+
+
+export function computeMaxRiskScore(rows) {
+  let total = 0;
+  (rows || []).forEach((row) => {
+    total += getRiskScore(row);
+  });
+  return total;
 }

@@ -3,97 +3,97 @@
 window.INTRO_TEXT = {
   home: `
     <p>
-      Pick a risk analysis tool to get started. Each one provides quick, clear insights with built-in reporting features.
+      Pick a risk analysis tool to get started. Each one helps you review controls, identify gaps, and generate a clear risk summary.
     </p>
   `,
 
   security: `
-      <p>This tool helps you analyze security risks. You can review protective controls, assess exposure levels, and generate a structured risk summary.</p>
+      <p>This tool helps you review core security protections and identify weaknesses that increase exposure.</p>
 
       <ul>
-        <li>Review existing security controls</li>
-        <li>Toggle controls on or off</li>
-        <li>Generate a clear risk percentage</li>
+        <li>Review important security controls</li>
+        <li>Toggle controls to reflect the current environment</li>
+        <li>Generate a clear risk score and risk level</li>
       </ul>
   `,
 
   backups: `
-      <p>This tool helps you analyze backup risks. You can review your current backup setup, identify gaps, and assess the likelihood of data loss.</p>
+      <p>This tool evaluates backup reliability and resilience against data loss, hardware failure, or ransomware.</p>
 
       <ul>
-        <li>Evaluate backup coverage</li>
+        <li>Assess backup coverage and redundancy</li>
         <li>Identify missing safeguards</li>
-        <li>Generate a structured risk summary</li>
+        <li>Generate a clear risk score and risk level</li>
       </ul>
   `,
 
   emailAccounts: `
-      <p>This tool helps you analyze email account risks. You can review account protections, identify weak points, and assess potential compromise exposure.</p>
+      <p>This tool analyzes the security of email accounts, which are often the primary target for account compromise.</p>
 
       <ul>
-        <li>Check account security measures</li>
-        <li>Review authentication controls</li>
-        <li>Generate a clear risk percentage</li>
+        <li>Review authentication and account protections</li>
+        <li>Identify potential takeover risks</li>
+        <li>Generate a clear risk score and risk level</li>
       </ul>
   `,
 
   setupTroubleshooting: `
-      <p>This tool helps you analyze risks related to system setup and troubleshooting. You can assess configuration quality and identify operational weaknesses.</p>
+      <p>This tool evaluates risks related to system setup and troubleshooting practices.</p>
 
       <ul>
-        <li>Review configuration practices</li>
-        <li>Identify setup inconsistencies</li>
-        <li>Generate a structured risk summary</li>
+        <li>Review configuration and update practices</li>
+        <li>Identify weak operational processes</li>
+        <li>Generate a clear risk score and risk level</li>
       </ul>
   `,
 
   virusCleanup: `
-      <p>This tool helps you analyze risks associated with malware infection and cleanup. You can assess containment measures and identify residual exposure.</p>
+      <p>This tool analyzes risks involved in malware infection and system cleanup procedures.</p>
 
       <ul>
-        <li>Evaluate infection response steps</li>
-        <li>Review cleanup procedures</li>
-        <li>Generate a clear risk percentage</li>
+        <li>Review malware removal steps</li>
+        <li>Identify areas where reinfection could occur</li>
+        <li>Generate a clear risk score and risk level</li>
       </ul>
   `,
 
   dataBackup: `
-      <p>This tool helps you analyze risks related to data backup reliability. You can assess storage methods, redundancy, and recovery readiness.</p>
+      <p>This tool evaluates data protection and recovery readiness.</p>
 
       <ul>
-        <li>Review backup storage locations</li>
-        <li>Identify redundancy gaps</li>
-        <li>Generate a structured risk summary</li>
+        <li>Assess backup reliability and redundancy</li>
+        <li>Identify gaps that could lead to data loss</li>
+        <li>Generate a clear risk score and risk level</li>
       </ul>
   `,
 
   computerRepair: `
-      <p>This tool helps you analyze risks associated with computer repair and hardware servicing. You can assess data safety and operational impact.</p>
+      <p>This tool reviews risks related to hardware repair and system maintenance.</p>
 
       <ul>
-        <li>Evaluate data protection during repair</li>
-        <li>Review hardware replacement procedures</li>
-        <li>Generate a clear risk percentage</li>
+        <li>Evaluate hardware diagnostics and repair procedures</li>
+        <li>Assess potential data safety risks during repair</li>
+        <li>Generate a clear risk score and risk level</li>
       </ul>
   `,
 
   wifiInternet: `
-      <p>This tool helps you analyze WiFi and internet risks. You can review network configuration, access controls, and exposure levels.</p>
+      <p>This tool evaluates network configuration and wireless security practices.</p>
 
       <ul>
-        <li>Assess wireless security settings</li>
-        <li>Review network access controls</li>
-        <li>Generate a structured risk summary</li>
+        <li>Review router and Wi-Fi security settings</li>
+        <li>Identify network exposure risks</li>
+        <li>Generate a clear risk score and risk level</li>
       </ul>
   `,
 
   printerSetup: `
-      <p>This tool helps you analyze risks related to printer setup and network printing. You can assess access permissions and data exposure.</p>
+      <p>This tool reviews risks related to printer configuration and network printing.</p>
 
       <ul>
-        <li>Review printer access settings</li>
-        <li>Evaluate network visibility</li>
-        <li>Generate a clear risk percentage</li>
+        <li>Evaluate printer access and network configuration</li>
+        <li>Identify potential data exposure risks</li>
+        <li>Generate a clear risk score and risk level</li>
       </ul>
   `
 };
