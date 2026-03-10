@@ -74,12 +74,16 @@ async function initReviewPage() {
   shell.contentHost.appendChild(reportHost);
   // Build and append the risk report pane
   const reportData = await buildRiskReportData(service);
-  const reportPane = buildRiskReportPane({ id: "riskReportPane", reportData });
+  const reportPane = buildRiskReportPane({
+    id: "riskReportPane",
+    title: reportData.title,
+    reportData
+  });
   reportHost.appendChild(reportPane.node);
   // Build and append the export pane
   const exportPane = buildRiskExportPane({
   id: "exportHost",
-  backUrl: "riskPage.html?service=" + service
+  backUrl: "riskPage.html?service=" + encodeURIComponent(service)
   });
   shell.contentHost.appendChild(exportPane.node);
   lifecycle.add(exportPane.destroy);    
