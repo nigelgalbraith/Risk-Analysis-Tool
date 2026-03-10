@@ -17,7 +17,10 @@
   --accent: #06b6d4;
   --shadow-card: 0 6px 14px rgba(0, 0, 0, 0.35);
   --shadow-card-hover: 0 10px 20px rgba(0, 0, 0, 0.45);
-}
+  --success: #2e7d32;
+  --danger: #c62828;
+  --warning: #ef6c00;
+  }
 
 html[data-theme="light"] {
   --bg: #eef2f7;
@@ -35,6 +38,9 @@ html[data-theme="light"] {
   --accent: #2563eb;
   --shadow-card: 0 6px 14px rgba(0, 0, 0, 0.08);
   --shadow-card-hover: 0 10px 20px rgba(0, 0, 0, 0.12);
+  --success: #2e7d32;
+  --danger: #c62828;
+  --warning: #ef6c00;
 }
 
 /* =========================
@@ -86,7 +92,7 @@ h1 {
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 0.875rem;
-  width: 80%;
+  width: 95%;
   margin: 0 auto;
   box-shadow: var(--shadow-card);
 }
@@ -108,9 +114,40 @@ h1 {
 
 .intro-text p { margin: 0; }
 
+
 /* =========================
-   Pane Content: Risk Tables (Shared)
+   Pane Content: Risk Tables 
    ========================= */
+.pane-host--risk-details .rd-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.pane-host--risk-details .rd-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.pane-host--risk-details .rd-label {
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.pane-host--risk-details .rd-input,
+.pane-host--risk-details .rd-textarea {
+  width: 100%;
+  background: var(--surface-raised);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+}
+
+.pane-host--risk-details .rd-textarea {
+  resize: vertical;
+  min-height: 6rem;
+}
 
 .pane-host--risk-table .rt-title,
 .pane-host--risk-summary .rt-title {
@@ -141,7 +178,6 @@ h1 {
   text-align: left;
 }
 
-/* Shared table styling for any pane using .rt-table */
 .pane .rt-table {
   width: 100%;
   border-collapse: collapse;
@@ -150,7 +186,9 @@ h1 {
 }
 
 .pane-host--risk-table .rt-title,
-.pane-host--risk-summary .rt-title {
+.pane-host--risk-summary .rt-title,
+.pane-host--risk-review-action .rt-title,
+.pane-host--risk-export .rt-title {
   text-align: center;
 }
 
@@ -171,7 +209,9 @@ h1 {
   vertical-align: middle;
 }
 
-.pane-host--risk-table .rt-control { font-weight: 700; }
+.pane-host--risk-table .rt-control { 
+  font-weight: 700; 
+}
 
 .pane-host--risk-table .rt-status { min-width: 170px; }
 
@@ -206,23 +246,55 @@ h1 {
   color: var(--text);
 }
 
-.pane-host--risk-summary .rt-table {
+.pane-host--risk-table .rt-table td,
+.pane-host--risk-table .rt-table th {
+  vertical-align: middle;
+}
+
+.pane-host--risk-table .rt-control,
+.pane-host--risk-table .rt-status,
+.pane-host--risk-table .rt-riskScore {
+  text-align: center;
+}
+
+.pane-host--risk-table .rt-riskFactors {
+  white-space: pre-line;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.pane-host--risk-table .rt-table {
   table-layout: fixed;
 }
 
-.pane-host--risk-summary .rt-table th:nth-child(1),
-.pane-host--risk-summary .rt-table td:nth-child(1) {
-  width: 65%;
+.pane-host--risk-table .rt-table th:nth-child(1),
+.pane-host--risk-table .rt-table td:nth-child(1) {
+  width: 11%;
 }
 
-.pane-host--risk-summary .rt-table th:nth-child(2),
-.pane-host--risk-summary .rt-table td:nth-child(2) {
-  width: 17.5%;
+.pane-host--risk-table .rt-table th:nth-child(2),
+.pane-host--risk-table .rt-table td:nth-child(2) {
+  width: 10%;
 }
 
-.pane-host--risk-summary .rt-table th:nth-child(3),
-.pane-host--risk-summary .rt-table td:nth-child(3) {
-  width: 17.5%;
+.pane-host--risk-table .rt-table th:nth-child(3),
+.pane-host--risk-table .rt-table td:nth-child(3) {
+  width: 23%;
+}
+
+.pane-host--risk-table .rt-table th:nth-child(4),
+.pane-host--risk-table .rt-table td:nth-child(4) {
+  width: 23%;
+}
+
+.pane-host--risk-table .rt-table th:nth-child(5),
+.pane-host--risk-table .rt-table td:nth-child(5) {
+  width: 25%;
+}
+
+.pane-host--risk-table .rt-table th:nth-child(6),
+.pane-host--risk-table .rt-table td:nth-child(6) {
+  width: 8%;
 }
 
 .pane-host--risk-summary .rt-table th,
@@ -240,6 +312,123 @@ h1 {
   white-space: nowrap;
   text-align: right;
   font-weight: 600;
+}
+
+.pane-host--risk-review-action .rra-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.pane-host--risk-review-action .rra-button {
+  min-width: 12rem;
+}
+.rt-riskFactors {
+  white-space: pre-line;
+}
+/* =========================
+   Pane Content: Risk Report
+   ========================= */
+.pane-host--risk-report .rr-details,
+.pane-host--risk-report .rr-summary,
+.pane-host--risk-report .rr-notes {
+  margin-bottom: 1rem;
+}
+
+.pane-host--risk-report .rr-detail-row,
+.pane-host--risk-report .rr-summary-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  align-items: start;
+}
+
+.pane-host--risk-report .rr-detail-label,
+.pane-host--risk-report .rr-summary-label {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.pane-host--risk-report .rr-summary-value--level {
+  font-weight: 700;
+}
+
+.pane-host--risk-report .rr-table {
+  margin-bottom: 1rem;
+}
+
+.pane-host--risk-report .rr-control,
+.pane-host--risk-report .rr-status,
+.pane-host--risk-report .rr-risk-score {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.pane-host--risk-report .rr-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.pane-host--risk-report .rr-section-title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--text-strong);
+}
+
+.pane-host--risk-report .rr-notes-text {
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.rr-risk-weight {
+  font-weight: 700;
+  color: var(--danger);
+  margin-bottom: 0.35rem;
+}
+
+/* =========================
+   Export Actions
+   ========================= */
+.pane-host--risk-export .re-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.re-button {
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--surface-button);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.re-button:hover {
+  background: var(--surface-raised);
+}
+
+.re-button-muted {
+  background: var(--surface-button-muted);
+}
+
+/* =========================
+   Report Status Colors
+   ========================= */
+
+.rr-status-enabled {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.rr-status-disabled {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.rr-row-disabled {
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
 }
 
 /* =========================
@@ -315,7 +504,7 @@ button:hover { filter: brightness(1.08); }
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   border-radius: 0.75rem;
-  width: 80%;
+  width: 95%;
 }
 
 .nav .nav-links {
@@ -357,7 +546,7 @@ button:hover { filter: brightness(1.08); }
   gap: 1.6rem;
   margin-top: 2rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 70%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -382,6 +571,7 @@ button:hover { filter: brightness(1.08); }
   margin: 0 0 0.6rem;
   font-size: 1.6rem;
   color: var(--text-strong);
+  text-align: center;
 }
 
 .risk-card p {
@@ -390,6 +580,7 @@ button:hover { filter: brightness(1.08); }
   opacity: 0.85;
   line-height: 1.4rem;
   color: var(--text-soft);
+  text-align: center;
 }
 
 .risk-card a {
@@ -418,4 +609,48 @@ button:hover { filter: brightness(1.08); }
   }
 
   .app { padding: 0.5rem; }
+  
+}
+
+@media print {
+
+  /* Hide export buttons */
+  .pane-host--risk-export {
+    display: none;
+  }
+
+  /* Hide theme toggle */
+  .theme-toggle-wrapper,
+  .theme-toggle {
+    display: none;
+  }
+
+  /* Hide navigation */
+  nav,
+  .nav,
+  .app-nav {
+    display: none;
+  }
+
+  /* Clean print background */
+  body {
+    background: white;
+    color: black;
+  }
+
+  /* Remove card shadows for print */
+  .pane {
+    box-shadow: none;
+  }
+
+  /* Repeat table header on each page */
+  .rt-table thead {
+    display: table-header-group;
+  }
+
+  /* Prevent row splitting */
+  .rt-table tr {
+    page-break-inside: avoid;
+  }
+
 }
