@@ -269,7 +269,7 @@ h1 {
 
 .pane-host--risk-table .rt-table th:nth-child(1),
 .pane-host--risk-table .rt-table td:nth-child(1) {
-  width: 11%;
+  width: 20%;
 }
 
 .pane-host--risk-table .rt-table th:nth-child(2),
@@ -279,22 +279,17 @@ h1 {
 
 .pane-host--risk-table .rt-table th:nth-child(3),
 .pane-host--risk-table .rt-table td:nth-child(3) {
-  width: 23%;
+  width: 30%;
 }
 
 .pane-host--risk-table .rt-table th:nth-child(4),
 .pane-host--risk-table .rt-table td:nth-child(4) {
-  width: 23%;
+  width: 30%;
 }
 
 .pane-host--risk-table .rt-table th:nth-child(5),
 .pane-host--risk-table .rt-table td:nth-child(5) {
-  width: 25%;
-}
-
-.pane-host--risk-table .rt-table th:nth-child(6),
-.pane-host--risk-table .rt-table td:nth-child(6) {
-  width: 8%;
+  width: 10%;
 }
 
 .pane-host--risk-summary .rt-table th,

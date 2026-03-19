@@ -85,7 +85,7 @@ window.introCards = {
       Useful for understanding how likelihood, impact,
       and final risk scores are calculated.
     `,
-    link: "riskReference.html"
+    link: "riskReference.html?service=riskReference"
   }
 
 };

@@ -70,7 +70,6 @@ export function normalizeStatus(value) {
   return value === "enabled" ? "enabled" : "disabled";
 }
 
-
 export function getRiskScore(row) {
   if (!row) return 0;
   const likelihood = row.likelihood || {};

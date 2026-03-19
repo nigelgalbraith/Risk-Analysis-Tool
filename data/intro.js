@@ -95,5 +95,13 @@ window.INTRO_TEXT = {
         <li>Identify potential data exposure risks</li>
         <li>Generate a clear risk score and risk level</li>
       </ul>
+  `,
+
+    riskReference: `
+      <p>This displays the likelihood and impact values.</p>
+
+      <ul>
+        <li>Risk score = avg(likelihood) x avg(impact)</li>
+      </ul>
   `
 };

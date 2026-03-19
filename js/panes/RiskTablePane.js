@@ -49,21 +49,6 @@ function applyStrike(prosCell, consCell, status) {
 }
 
 
-/** Formats likelihood and impact values for display */
-function formatRiskFactors(row) {
-  const likelihood = row.likelihood || {};
-  const impact = row.impact || {};
-  return "Likelihood\n" +
-    "exploitability: " + (likelihood.exploitability ?? "-") +
-    ", exposure: " + (likelihood.exposure ?? "-") +
-    ", prevalence: " + (likelihood.prevalence ?? "-") +
-    "\n\nImpact\n" +
-    "confidentiality: " + (impact.confidentiality ?? "-") +
-    ", integrity: " + (impact.integrity ?? "-") +
-    ", availability: " + (impact.availability ?? "-");
-}
-
-
 /** Builds tooltip text for a full risk factors cell */
 function buildRiskFactorTooltip(row, definitionsData) {
   const labels = definitionsData?.labels || {};
@@ -105,7 +90,7 @@ function initRiskTablePane(host, settings, api) {
     const table = el("table", "rt-table");
     const thead = document.createElement("thead");
     const trh = document.createElement("tr");
-    ["Control", "Status", "Pros", "Cons", "Risk Factors", "Risk Score"].forEach((name) => {
+    ["Control", "Status", "Pros", "Cons", "Risk Score"].forEach((name) => {
       trh.appendChild(el("th", "", name));
     });
     thead.appendChild(trh);
@@ -164,13 +149,9 @@ function initRiskTablePane(host, settings, api) {
       tdCons.appendChild(makeList(row.cons || []));
       tr.appendChild(tdCons);
       applyStrike(tdPros, tdCons, status);
-      const tdFactors = document.createElement("td");
-      tdFactors.className = "rt-riskFactors";
-      tdFactors.textContent = formatRiskFactors(row);
-      tdFactors.title = buildRiskFactorTooltip(row, definitionsData);
-      tr.appendChild(tdFactors);
       const actualRisk = status === "enabled" ? 0 : baseRisk;
       tdRisk = el("td", "rt-riskScore", String(actualRisk));
+      tdRisk.title = buildRiskFactorTooltip(row, definitionsData);
       tr.appendChild(tdRisk);
       tbody.appendChild(tr);
     });
