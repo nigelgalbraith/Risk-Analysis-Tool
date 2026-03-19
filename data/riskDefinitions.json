@@ -1,0 +1,54 @@
+{
+  "labels": {
+    "exploitability": "Exploitability",
+    "exposure": "Exposure",
+    "prevalence": "Prevalence",
+    "confidentiality": "Confidentiality",
+    "integrity": "Integrity",
+    "availability": "Availability"
+  },
+  "definitions": {
+    "exploitability": {
+      "1": "Very hard — requires insider access or advanced expertise",
+      "2": "Hard — specialised tools or skills required",
+      "3": "Moderate — known techniques, some effort",
+      "4": "Easy — public tools available",
+      "5": "Trivial — automated or script-based"
+    },
+    "exposure": {
+      "1": "Internal only, heavily restricted",
+      "2": "Internal network access required",
+      "3": "Limited external access (VPN/auth)",
+      "4": "Public-facing with controls",
+      "5": "Public-facing with minimal barriers"
+    },
+    "prevalence": {
+      "1": "Very rare or theoretical",
+      "2": "Uncommon",
+      "3": "Known but not widespread",
+      "4": "Common",
+      "5": "Very common or actively exploited"
+    },
+    "confidentiality": {
+      "1": "No sensitive data exposure",
+      "2": "Minor data exposure",
+      "3": "Internal or moderately sensitive data exposure",
+      "4": "Sensitive data exposure (PII/business data)",
+      "5": "Critical data exposure (financial/identity)"
+    },
+    "integrity": {
+      "1": "No meaningful integrity impact",
+      "2": "Minor incorrect data",
+      "3": "Noticeable tampering",
+      "4": "Major corruption",
+      "5": "Full compromise of trust"
+    },
+    "availability": {
+      "1": "No disruption",
+      "2": "Minor slowdown",
+      "3": "Partial outage",
+      "4": "Major outage",
+      "5": "Complete service loss"
+    }
+  }
+}

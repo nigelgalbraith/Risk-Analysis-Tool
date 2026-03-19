@@ -17,6 +17,7 @@ const TABLE_CLASS = "pane-host--risk-table";
 const TABLE_TITLE = "Risk Table";
 const TABLE_DATA_URL = "data/riskTables.json";
 const TABLE_STORAGE_KEY = "riskAnalysisState.v1";
+const DEFINITIONS_DATA_URL = "data/riskDefinitions.json";
 
 // BUILD
 /** Gets or initializes state for a risk category */
@@ -62,6 +63,28 @@ function formatRiskFactors(row) {
     ", availability: " + (impact.availability ?? "-");
 }
 
+
+/** Builds tooltip text for a full risk factors cell */
+function buildRiskFactorTooltip(row, definitionsData) {
+  const labels = definitionsData?.labels || {};
+  const definitions = definitionsData?.definitions || {};
+  const likelihood = row.likelihood || {};
+  const impact = row.impact || {};
+  const groups = [
+    { title: "Likelihood", values: likelihood },
+    { title: "Impact", values: impact }
+  ];
+  return groups.map((group) => {
+    const lines = Object.entries(group.values).map(([key, score]) => {
+      const label = labels[key] || key;
+      const description = definitions[key]?.[String(score)] || "No definition available";
+      return `${label}: ${score} — ${description}`;
+    });
+    return `${group.title}\n${lines.join("\n")}`;
+  }).join("\n\n");
+}
+
+
 /** Initializes the risk table pane node */
 function initRiskTablePane(host, settings, api) {
   const riskKey = settings.riskKey || settings.category || "";
@@ -78,7 +101,7 @@ function initRiskTablePane(host, settings, api) {
   const catState = getOrCreateCategoryState(state, riskKey);
   let destroyFns = [];
   /** Renders table rows for the configured risk key */
-  function renderTable(defRows) {
+  function renderTable(defRows, definitionsData) {
     const table = el("table", "rt-table");
     const thead = document.createElement("thead");
     const trh = document.createElement("tr");
@@ -144,6 +167,7 @@ function initRiskTablePane(host, settings, api) {
       const tdFactors = document.createElement("td");
       tdFactors.className = "rt-riskFactors";
       tdFactors.textContent = formatRiskFactors(row);
+      tdFactors.title = buildRiskFactorTooltip(row, definitionsData);
       tr.appendChild(tdFactors);
       const actualRisk = status === "enabled" ? 0 : baseRisk;
       tdRisk = el("td", "rt-riskScore", String(actualRisk));
@@ -153,13 +177,18 @@ function initRiskTablePane(host, settings, api) {
     table.appendChild(tbody);
     host.appendChild(table);
   }
-  fetchJSON(dataUrl).then((allTables) => {
+  Promise.all([
+    fetchJSON(dataUrl),
+    fetchJSON(DEFINITIONS_DATA_URL)
+  ]).then(([allTables, definitionsData]) => {
     const rows = allTables && allTables[riskKey] ? allTables[riskKey] : null;
+
     if (!rows || rows.length === 0) {
       renderHostMessage(host, 'No rows found for "' + riskKey + '" in ' + dataUrl + ".", "rt-error", false);
       return;
     }
-    renderTable(rows);
+
+    renderTable(rows, definitionsData || {});
   }).catch((err) => {
     renderHostMessage(host, String(err && (err.message || err)), "rt-error", false);
   });

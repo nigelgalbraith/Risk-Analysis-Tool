@@ -76,6 +76,16 @@ window.introCards = {
       network stability, and print infrastructure reliability.
     `,
     link: "riskPage.html?service=printerSetup"
+  },
+
+  riskReference: {
+    title: "Risk Reference",
+    description: `
+      View scoring definitions and risk level summaries.
+      Useful for understanding how likelihood, impact,
+      and final risk scores are calculated.
+    `,
+    link: "riskReference.html"
   }
 
 };
