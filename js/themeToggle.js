@@ -1,10 +1,12 @@
+// STATE
 const THEME_KEY = "theme";
 const THEME_LIGHT = "light";
 const THEME_DARK = "dark";
 const TOGGLE_SELECTOR = ".theme-toggle";
 const ICON_SELECTOR = ".theme-toggle-icon";
 
-
+// BUILD
+/** Applies a theme to the current document */
 function applyTheme(theme, rootDoc) {
   const doc = rootDoc || document;
   const html = doc.documentElement;
@@ -13,13 +15,13 @@ function applyTheme(theme, rootDoc) {
   const btn = doc.querySelector(TOGGLE_SELECTOR);
   if (!btn) return;
   const isLight = theme === THEME_LIGHT;
-  // DOM update keeps button state/icon in sync with active theme.
   btn.setAttribute("aria-pressed", String(isLight));
   const icon = btn.querySelector(ICON_SELECTOR);
   if (icon) icon.textContent = isLight ? "☀" : "☾";
 }
 
 
+/** Initializes the theme toggle control */
 export function initThemeToggle(rootDoc) {
   const doc = rootDoc || document;
   const saved = localStorage.getItem(THEME_KEY);
@@ -32,7 +34,6 @@ export function initThemeToggle(rootDoc) {
     const current = doc.documentElement.dataset.theme || THEME_DARK;
     applyTheme(current === THEME_LIGHT ? THEME_DARK : THEME_LIGHT, doc);
   };
-  // Event wiring for manual theme toggling.
   btn.addEventListener("click", onClick);
   return function cleanup() {
     btn.removeEventListener("click", onClick);

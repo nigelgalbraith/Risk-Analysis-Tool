@@ -13,14 +13,13 @@ function buildCardsHTML(cards) {
     const title = card.title || key;
     const desc = card.description || "";
     const link = card.link || "#";
-    return '<div class="risk-card"><a href="' + link + '"><h2>' + title + "</h2><p>" + desc + "</p></a></div>";
+    return '<div class="risk-card"><a href="' + link + '"><h2>' + title + '</h2><p>' + desc + '</p></a></div>';
   }).join("");
 }
 
 
-
 /** Initializes the intro cards pane node */
-function initIntroCardsPane(host, api) {
+function initIntroCardsPane(host) {
   const cards = window.introCards;
   if (!cards) {
     renderHostMessage(host, "introCards data not loaded.", "", true, "p");
@@ -36,14 +35,13 @@ function initIntroCardsPane(host, api) {
 }
 
 
-
 /** Builds the intro cards pane */
-export function buildIntroCardPane(options, api) {
+export function buildIntroCardPane(options) {
   const settings = options || {};
   const node = document.createElement("div");
   node.className = settings.className || CARDS_CLASS;
   if (settings.id) node.id = settings.id;
   addHostClasses(node, ["pane-host", "pane-host--intro-cards"]);
-  const instance = initIntroCardsPane(node, api || {});
+  const instance = initIntroCardsPane(node);
   return { node, destroy: instance.destroy };
 }

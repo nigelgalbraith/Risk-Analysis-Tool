@@ -1,6 +1,8 @@
+// BUILD
+/** Provides a shared no-op pane destroy contract */
 export const NOOP_PANE = Object.freeze({ destroy() {} });
 
-
+/** Parses JSON safely and falls back on failure */
 export function safeJSONParse(raw, fallback = null) {
   try {
     return JSON.parse(raw);
@@ -10,6 +12,7 @@ export function safeJSONParse(raw, fallback = null) {
 }
 
 
+/** Loads persisted state from local storage */
 export function loadState(storageKey, fallback = {}) {
   const raw = window.localStorage.getItem(storageKey);
   if (!raw) return fallback;
@@ -17,11 +20,13 @@ export function loadState(storageKey, fallback = {}) {
 }
 
 
+/** Saves state to local storage */
 export function saveState(storageKey, stateObj) {
   window.localStorage.setItem(storageKey, JSON.stringify(stateObj));
 }
 
 
+/** Fetches JSON without using a cached response */
 export async function fetchJSON(url) {
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to load JSON: ${url} (${res.status})`);
@@ -29,6 +34,7 @@ export async function fetchJSON(url) {
 }
 
 
+/** Creates a DOM element with optional class and text */
 export function el(tag, cls = "", text = "") {
   const node = document.createElement(tag);
   if (cls) node.className = cls;
@@ -37,12 +43,14 @@ export function el(tag, cls = "", text = "") {
 }
 
 
+/** Clears a host element and returns it */
 export function clearHost(host) {
   host.innerHTML = "";
   return host;
 }
 
 
+/** Applies a list of CSS classes to a host element */
 export function addHostClasses(host, classes) {
   (classes || []).forEach((name) => {
     if (name) host.classList.add(name);
@@ -51,6 +59,7 @@ export function addHostClasses(host, classes) {
 }
 
 
+/** Renders a message into a host element */
 export function renderHostMessage(host, message, className, replace = true, tag = "div") {
   if (replace) clearHost(host);
   const box = el(tag, className, message);
@@ -59,6 +68,7 @@ export function renderHostMessage(host, message, className, replace = true, tag 
 }
 
 
+/** Renders a host title element */
 export function renderHostTitle(host, title, className = "rt-title") {
   const heading = el("h2", className, title);
   host.appendChild(heading);
@@ -66,10 +76,32 @@ export function renderHostTitle(host, title, className = "rt-title") {
 }
 
 
+/** Reads the current service key from the URL */
+export function getServiceKey() {
+  const params = new URLSearchParams(window.location.search);
+  return (params.get("service") || "").trim();
+}
+
+
+/** Converts a value to display title case */
+export function titleCase(value) {
+  return String(value || "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, function (match) {
+      return match.toUpperCase();
+    })
+    .trim();
+}
+
+
+/** Normalizes a status value to the supported set */
 export function normalizeStatus(value) {
   return value === "enabled" ? "enabled" : "disabled";
 }
 
+
+/** Computes the weighted risk score for a row */
 export function getRiskScore(row) {
   if (!row) return 0;
   const likelihood = row.likelihood || {};
@@ -94,6 +126,7 @@ export function getRiskScore(row) {
 }
 
 
+/** Computes the maximum combined risk score for a set of rows */
 export function computeMaxRiskScore(rows) {
   let total = 0;
   (rows || []).forEach((row) => {

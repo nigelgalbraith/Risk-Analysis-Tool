@@ -79,7 +79,6 @@ function renderSummary(host, total, maxScore, msgObj) {
 }
 
 
-
 /** Initializes the risk summary pane node */
 function initRiskSummaryPane(host, settings, api) {
   const riskKey = settings.riskKey || "";
@@ -126,7 +125,6 @@ function initRiskSummaryPane(host, settings, api) {
     }
   };
 }
-
 
 
 /** Builds the risk summary pane */

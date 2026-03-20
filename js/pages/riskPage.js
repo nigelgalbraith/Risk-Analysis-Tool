@@ -1,64 +1,30 @@
 // IMPORTS
 import "../../data/intro.js";
-import { buildAppShell } from "../core/appShell.js";
-import { createEventBus } from "../core/eventBus.js";
-import { createPageLifecycle } from "../core/pageLifecycle.js";
-import { createSharedState } from "../core/sharedState.js";
+import { createPageRuntime } from "../core/pageRuntime.js";
+import { getServiceKey, titleCase } from "../core/helpers.js";
 import { buildIntroPane } from "../panes/IntroPane.js";
+import { buildRiskDetailsPane } from "../panes/RiskDetailsPane.js";
 import { buildRiskTablePane } from "../panes/RiskTablePane.js";
 import { buildRiskSummaryPane } from "../panes/RiskSummaryPane.js";
-import { initThemeToggle } from "../themeToggle.js";
-import { buildRiskDetailsPane } from "../panes/RiskDetailsPane.js";
 import { buildRiskReviewActionPane } from "../panes/RiskReviewActionPane.js";
 
 // STATE
 const BASE_TITLE = "Risk Analysis";
-const BACK_NAV_KEY = "back";
+const BACK_NAV_KEY = "home";
 const MISSING_PARAM_HTML = "<p>Missing required URL parameter: <code>?service=</code></p>";
 const RISK_STATE_ENTRIES = [["page", "risk"]];
 
 // BUILD
-/** Reads the service key from the current URL */
-function getServiceKey() {
-  const params = new URLSearchParams(window.location.search);
-  return (params.get("service") || "").trim();
-}
-
-
-/** Converts a value to display title case */
-function titleCase(value) {
-  return String(value || "")
-    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-    .replace(/[-_]+/g, " ")
-    .replace(/\b\w/g, function (match) {
-      return match.toUpperCase();
-    })
-    .trim();
-}
-
-
 /** Initializes the risk page orchestrator */
-function initRiskPage() {
-  // Core lifecycle and shell setup
-  const lifecycle = createPageLifecycle();
-  const shell = buildAppShell({ pageTitle: BASE_TITLE, activeNavKey: BACK_NAV_KEY });
-  const events = createEventBus();
-  const state = createSharedState(events, RISK_STATE_ENTRIES);
+export function initRiskPage() {
+  const { lifecycle, shell, events, state } = createPageRuntime({
+    pageTitle: BASE_TITLE,
+    activeNavKey: BACK_NAV_KEY,
+    initialState: RISK_STATE_ENTRIES
+  });
   const api = { events, state, lifecycle };
-  // Initialize theme toggle and ensure cleanup on page lifecycle end
-  const cleanupTheme = initThemeToggle(document);
-  lifecycle.add(cleanupTheme);
-  lifecycle.add(() => events.clear());
-  // Ensure lifecycle is destroyed when page is unloaded or hidden
-  const onPageHide = function () {
-    lifecycle.destroy();
-  };
-  window.addEventListener("pagehide", onPageHide);
-  lifecycle.add(() => window.removeEventListener("pagehide", onPageHide));
-  // Resolve requested service key from URL and find page title element
   const service = getServiceKey();
   const heading = shell.header.querySelector("#pageTitle");
-  // Handle missing service parameter
   if (!service) {
     const introHost = document.createElement("div");
     introHost.className = "intro-text";
@@ -75,49 +41,41 @@ function initRiskPage() {
     document.title = BASE_TITLE;
     return;
   }
-  // Format service display name and update page title
   const displayName = titleCase(service);
   if (heading) heading.textContent = displayName + " Risk Analysis";
   document.title = displayName + " Risk Analysis";
-  // Intro pane describing the selected service assessment
   const introPane = buildIntroPane({
     introKey: service,
     className: "intro-text",
     id: "introHost"
   }, api);
-  shell.contentHost.appendChild(introPane.node);
-  lifecycle.add(introPane.destroy);
-  // Assessment details pane for client/system/assessor/notes
   const detailsPane = buildRiskDetailsPane({
     id: "detailsHost",
     riskKey: service,
     title: "Assessment Details"
   }, api);
-  shell.contentHost.appendChild(detailsPane.node);
-  lifecycle.add(detailsPane.destroy);
-  // Main risk control table pane
   const tablePane = buildRiskTablePane({
     id: "tableHost",
     riskKey: service,
     title: titleCase(service) + " Risk Table"
   }, api);
-  shell.contentHost.appendChild(tablePane.node);
-  lifecycle.add(tablePane.destroy);
-  // Risk summary pane showing calculated score and summary message
   const summaryPane = buildRiskSummaryPane({
     id: "summaryHost",
     riskKey: service
   }, api);
-  shell.contentHost.appendChild(summaryPane.node);
-  lifecycle.add(summaryPane.destroy);
-  // Review action pane with button to navigate to review page
   const reviewPane = buildRiskReviewActionPane({
     id: "reviewHost",
     riskKey: service,
     title: "Review"
   }, api);
+  shell.contentHost.appendChild(introPane.node);
+  shell.contentHost.appendChild(detailsPane.node);
+  shell.contentHost.appendChild(tablePane.node);
+  shell.contentHost.appendChild(summaryPane.node);
   shell.contentHost.appendChild(reviewPane.node);
+  lifecycle.add(introPane.destroy);
+  lifecycle.add(detailsPane.destroy);
+  lifecycle.add(tablePane.destroy);
+  lifecycle.add(summaryPane.destroy);
   lifecycle.add(reviewPane.destroy);
 }
-
-initRiskPage();

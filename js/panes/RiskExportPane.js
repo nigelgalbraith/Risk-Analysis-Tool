@@ -16,28 +16,30 @@ function initRiskExportPane(host, settings) {
   const backUrl = settings.backUrl || "index.html";
   clearHost(host);
   renderHostTitle(host, title, "rt-title");
-
   const actions = el("div", "re-actions");
-
   const printButton = document.createElement("button");
   printButton.className = "re-button";
   printButton.textContent = "Print / Save PDF";
-  printButton.addEventListener("click", function () {
+  const onPrintClick = function () {
     window.print();
-  });
-
+  };
+  printButton.addEventListener("click", onPrintClick);
   const backButton = document.createElement("button");
   backButton.className = "re-button re-button-muted";
   backButton.textContent = "Back";
-  backButton.addEventListener("click", function () {
+  const onBackClick = function () {
     window.location.href = backUrl;
-  });
-
+  };
+  backButton.addEventListener("click", onBackClick);
   actions.appendChild(printButton);
   actions.appendChild(backButton);
   host.appendChild(actions);
-
-  return { destroy() {} };
+  return {
+    destroy() {
+      printButton.removeEventListener("click", onPrintClick);
+      backButton.removeEventListener("click", onBackClick);
+    }
+  };
 }
 
 

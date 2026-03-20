@@ -13,7 +13,7 @@ const REVIEW_ACTION_CLASS = "pane-host--risk-review-action";
 // BUILD
 /** Builds the review page URL for the selected service */
 function buildReviewUrl(riskKey) {
-  return "reviewPage.html?service=" + encodeURIComponent(riskKey);
+  return "index.html?page=review&service=" + encodeURIComponent(riskKey);
 }
 
 

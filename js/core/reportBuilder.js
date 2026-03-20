@@ -4,7 +4,8 @@ import {
   loadState,
   normalizeStatus,
   getRiskScore,
-  computeMaxRiskScore
+  computeMaxRiskScore,
+  titleCase
 } from "./helpers.js";
 
 // STATE
@@ -14,18 +15,6 @@ const STORAGE_KEY = "riskAnalysisState.v1";
 const DETAILS_ROOT_KEY = "reportDetailsByService";
 
 // BUILD
-/** Converts a value to display title case */
-function titleCase(value) {
-  return String(value || "")
-    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-    .replace(/[-_]+/g, " ")
-    .replace(/\b\w/g, function (match) {
-      return match.toUpperCase();
-    })
-    .trim();
-}
-
-
 /** Finds the matching summary range for a ratio value */
 function findSummaryRange(ranges, ratio) {
   for (let i = 0; i < (ranges || []).length; i += 1) {
@@ -51,7 +40,7 @@ function getServiceDetails(savedState, serviceKey) {
 }
 
 
-/** Builds the rendered report rows from table data and saved service state */
+/** Builds rendered report rows from table data and saved state */
 function buildReportRows(rows, serviceState) {
   return (rows || []).map((row) => {
     const id = String(row?.id || "").trim();
@@ -83,24 +72,20 @@ function computeTotalRiskScore(reportRows) {
 
 /** Builds a complete report model for the selected service */
 export async function buildRiskReportData(serviceKey) {
-  // Load source data and saved user state
   const [allTables, summaryRanges] = await Promise.all([
     fetchJSON(TABLES_URL),
     fetchJSON(SUMMARY_MESSAGES_URL)
   ]);
   const savedState = loadState(STORAGE_KEY, {});
-  // Resolve service rows, selections, and saved report details
   const serviceRows = Array.isArray(allTables?.[serviceKey]) ? allTables[serviceKey] : [];
   const serviceState = savedState?.[serviceKey] || {};
   const details = getServiceDetails(savedState, serviceKey);
-  // Build merged report rows and calculate score values
   const rows = buildReportRows(serviceRows, serviceState);
   const totalScore = computeTotalRiskScore(rows);
   const maxScore = computeMaxRiskScore(serviceRows);
   const ratio = maxScore > 0 ? totalScore / maxScore : 0;
   const summaryRange = findSummaryRange(summaryRanges || [], ratio);
   const displayName = titleCase(serviceKey);
-  // Return a single report object for the review page panes
   return {
     service: serviceKey,
     displayName,
@@ -117,5 +102,5 @@ export async function buildRiskReportData(serviceKey) {
     riskColor: String(summaryRange?.color || ""),
     summaryMessage: String(summaryRange?.message || ""),
     rows
- };
+  };
 }

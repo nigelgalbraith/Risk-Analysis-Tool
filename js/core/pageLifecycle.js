@@ -7,7 +7,6 @@ function runCleanup(fn) {
 }
 
 
-
 /** Creates a page lifecycle controller */
 export function createPageLifecycle() {
   const cleanups = [];

@@ -22,6 +22,7 @@ function getOrCreateDetailsRoot(stateObj) {
   return stateObj[DETAILS_ROOT_KEY];
 }
 
+
 function getOrCreateServiceDetails(detailsRoot, riskKey) {
   if (!detailsRoot[riskKey] || typeof detailsRoot[riskKey] !== "object") {
     detailsRoot[riskKey] = {
@@ -34,6 +35,7 @@ function getOrCreateServiceDetails(detailsRoot, riskKey) {
   return detailsRoot[riskKey];
 }
 
+
 function makeField(labelText, inputNode) {
   const wrap = el("div", "rd-field");
   const label = el("label", "rd-label", labelText);
@@ -41,6 +43,7 @@ function makeField(labelText, inputNode) {
   wrap.appendChild(inputNode);
   return wrap;
 }
+
 
 function makeInput(className, value) {
   const input = document.createElement("input");
@@ -50,6 +53,7 @@ function makeInput(className, value) {
   return input;
 }
 
+
 function makeTextarea(className, value) {
   const textarea = document.createElement("textarea");
   textarea.className = className;
@@ -58,35 +62,29 @@ function makeTextarea(className, value) {
   return textarea;
 }
 
+
 function initRiskDetailsPane(host, settings, api) {
   const riskKey = settings.riskKey || "";
   const title = settings.title || "Assessment Details";
   const storageKey = settings.storageKey || DETAILS_STORAGE_KEY;
-
   clearHost(host);
   renderHostTitle(host, title, "rt-title");
-
   if (!riskKey) {
     renderHostMessage(host, "Missing risk key.", "rt-error", false);
     return { destroy() {} };
   }
-
   const state = loadState(storageKey, {});
   const detailsRoot = getOrCreateDetailsRoot(state);
   const serviceDetails = getOrCreateServiceDetails(detailsRoot, riskKey);
-
   const form = el("div", "rd-form");
-
   const clientInput = makeInput("rd-input", serviceDetails.client);
   const systemInput = makeInput("rd-input", serviceDetails.system);
   const assessorInput = makeInput("rd-input", serviceDetails.assessor);
   const notesInput = makeTextarea("rd-textarea", serviceDetails.notes);
-
   form.appendChild(makeField("Client / Organisation", clientInput));
   form.appendChild(makeField("System / Device", systemInput));
   form.appendChild(makeField("Assessor", assessorInput));
   form.appendChild(makeField("Notes", notesInput));
-
   function persist() {
     const latestState = loadState(storageKey, {});
     const latestRoot = getOrCreateDetailsRoot(latestState);
@@ -104,10 +102,8 @@ function initRiskDetailsPane(host, settings, api) {
       });
     }
   }
-
   const inputs = [clientInput, systemInput, assessorInput, notesInput];
   const destroyFns = [];
-
   inputs.forEach((node) => {
     const onInput = function () {
       persist();
@@ -115,9 +111,7 @@ function initRiskDetailsPane(host, settings, api) {
     node.addEventListener("input", onInput);
     destroyFns.push(() => node.removeEventListener("input", onInput));
   });
-
   host.appendChild(form);
-
   return {
     destroy() {
       destroyFns.forEach((fn) => {
@@ -128,6 +122,7 @@ function initRiskDetailsPane(host, settings, api) {
     }
   };
 }
+
 
 export function buildRiskDetailsPane(options, api) {
   const settings = options || {};

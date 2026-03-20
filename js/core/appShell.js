@@ -1,3 +1,4 @@
+// STATE
 const APP_CLASS = "app";
 const HEADER_CLASS = "header-centered";
 const MAIN_CLASS = "split";
@@ -9,11 +10,13 @@ const THEME_TOGGLE_ICON_CLASS = "theme-toggle-icon";
 const THEME_TOGGLE_TEXT_CLASS = "theme-toggle-text";
 const NAV_CLASS = "nav";
 const NAV_LINKS_CLASS = "nav-links";
-const NAV_LINK_KEY = "home";
-const NAV_LINK_LABEL = "Back to Main Menu";
-const NAV_LINK_HREF = "index.html";
+const NAV_ITEMS = [
+  { key: "home", label: "Main Menu", href: "index.html" },
+  { key: "reference", label: "Risk Reference", href: "index.html?page=reference&service=riskReference" }
+];
 
-
+// BUILD
+/** Creates the shell theme toggle button */
 function createThemeToggle() {
   const wrapper = document.createElement("div");
   wrapper.className = THEME_TOGGLE_WRAPPER_CLASS;
@@ -37,22 +40,26 @@ function createThemeToggle() {
 }
 
 
+/** Creates the shell navigation for the active page */
 function createNav(activeNavKey) {
   if (!activeNavKey) return null;
   const nav = document.createElement("nav");
   nav.className = NAV_CLASS;
   const links = document.createElement("div");
   links.className = NAV_LINKS_CLASS;
-  const link = document.createElement("a");
-  link.href = NAV_LINK_HREF;
-  link.textContent = NAV_LINK_LABEL;
-  if (activeNavKey === NAV_LINK_KEY) link.setAttribute("aria-current", "page");
-  links.appendChild(link);
+  NAV_ITEMS.forEach(function (item) {
+    const link = document.createElement("a");
+    link.href = item.href;
+    link.textContent = item.label;
+    if (activeNavKey === item.key) link.setAttribute("aria-current", "page");
+    links.appendChild(link);
+  });
   nav.appendChild(links);
   return nav;
 }
 
 
+/** Builds the application shell and mounts it into the app root */
 export function buildAppShell({ pageTitle, activeNavKey }) {
   const appRoot = document.createElement("div");
   appRoot.className = APP_CLASS;

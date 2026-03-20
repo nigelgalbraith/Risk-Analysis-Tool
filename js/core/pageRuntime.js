@@ -2,13 +2,14 @@
 import { buildAppShell } from "./appShell.js";
 import { createEventBus } from "./eventBus.js";
 import { createPageLifecycle } from "./pageLifecycle.js";
+import { createSharedState } from "./sharedState.js";
+import { initThemeToggle } from "../themeToggle.js";
 
 // BUILD
 /** Clones initial state for runtime storage */
 function cloneInitialState(initialState) {
   return Object.assign({}, initialState || {});
 }
-
 
 
 /** Creates a state store with event emission */
@@ -39,13 +40,23 @@ function createStateStore(initialState, events) {
 }
 
 
+/** Creates a runtime state adapter from supported initial state shapes */
+function createRuntimeState(initialState, events) {
+  if (Array.isArray(initialState)) {
+    return createSharedState(events, initialState);
+  }
+  return createStateStore(initialState, events);
+}
+
 
 /** Creates a page runtime with shell, events, lifecycle, and state */
 export function createPageRuntime({ pageTitle, activeNavKey, initialState }) {
   const lifecycle = createPageLifecycle();
   const shell = buildAppShell({ pageTitle, activeNavKey });
   const events = createEventBus();
-  const state = createStateStore(initialState, events);
+  const state = createRuntimeState(initialState, events);
+  const cleanupTheme = initThemeToggle(document);
+  lifecycle.add(cleanupTheme);
   const onPageHide = function () {
     lifecycle.destroy();
   };

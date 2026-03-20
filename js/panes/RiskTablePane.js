@@ -27,7 +27,6 @@ function getOrCreateCategoryState(stateObj, categoryKey) {
 }
 
 
-
 /** Creates a list element from plain text items */
 function makeList(items) {
   const ul = el("ul", "rt-list");
@@ -38,7 +37,6 @@ function makeList(items) {
   });
   return ul;
 }
-
 
 
 /** Applies strike styling based on enabled status */
@@ -163,12 +161,10 @@ function initRiskTablePane(host, settings, api) {
     fetchJSON(DEFINITIONS_DATA_URL)
   ]).then(([allTables, definitionsData]) => {
     const rows = allTables && allTables[riskKey] ? allTables[riskKey] : null;
-
     if (!rows || rows.length === 0) {
       renderHostMessage(host, 'No rows found for "' + riskKey + '" in ' + dataUrl + ".", "rt-error", false);
       return;
     }
-
     renderTable(rows, definitionsData || {});
   }).catch((err) => {
     renderHostMessage(host, String(err && (err.message || err)), "rt-error", false);
@@ -184,7 +180,6 @@ function initRiskTablePane(host, settings, api) {
     }
   };
 }
-
 
 
 /** Builds the risk table pane */

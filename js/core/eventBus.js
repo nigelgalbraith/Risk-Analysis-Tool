@@ -1,9 +1,12 @@
+// BUILD
+/** Normalizes and validates an event name */
 function ensureEventName(eventName) {
   if (!eventName) throw new Error("eventBus.on: missing eventName");
   return String(eventName);
 }
 
 
+/** Creates an event bus with subscribe, emit, and clear helpers */
 export function createEventBus() {
   const listeners = Object.create(null);
   function on(eventName, handler) {

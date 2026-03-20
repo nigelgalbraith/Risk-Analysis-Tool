@@ -1,10 +1,11 @@
+// BUILD
+/** Creates a shared state store backed by a map */
 export function createSharedState(events, entries) {
   const map = new Map(entries || []);
   function get(key) {
     return map.get(key);
   }
   function set(key, value) {
-    // State mutation emits generic and key-specific events.
     map.set(key, value);
     if (events && events.emit) {
       events.emit("state:changed", { key, value });
