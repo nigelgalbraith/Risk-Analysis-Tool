@@ -15,26 +15,21 @@ const DEFINITIONS_URL = "data/riskDefinitions.json";
 
 // BUILD
 /** Builds the risk definitions table */
-function buildDefinitionsTable(data) {
-  const labels = data?.labels || {};
-  const definitions = data?.definitions || {};
+function buildDefinitionsTable(factor) {
   const table = el("table", "rt-table");
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
-  ["Factor", "Score", "Definition"].forEach((text) => {
+  ["Score", "Definition"].forEach((text) => {
     headRow.appendChild(el("th", "", text));
   });
   thead.appendChild(headRow);
   table.appendChild(thead);
   const tbody = document.createElement("tbody");
-  Object.entries(definitions).forEach(([factorKey, scoreMap]) => {
-    Object.entries(scoreMap || {}).forEach(([score, description]) => {
-      const row = document.createElement("tr");
-      row.appendChild(el("td", "", labels[factorKey] || titleCase(factorKey)));
-      row.appendChild(el("td", "", score));
-      row.appendChild(el("td", "", description));
-      tbody.appendChild(row);
-    });
+  Object.entries(factor.scores || {}).forEach(([score, description]) => {
+    const row = document.createElement("tr");
+    row.appendChild(el("td", "", score));
+    row.appendChild(el("td", "", description));
+    tbody.appendChild(row);
   });
   table.appendChild(tbody);
   return table;
@@ -47,7 +42,18 @@ function initRiskDefinitionsPane(host, settings) {
   fetchJSON(definitionsUrl).then((data) => {
     clearHost(host);
     renderHostTitle(host, "Risk Definitions", "rt-title");
-    host.appendChild(buildDefinitionsTable(data || {}));
+    const groups = data?.groups || {};
+    // --- Loop groups ---
+    Object.values(groups).forEach((group) => {
+      // Group title (Likelihood / Impact)
+      host.appendChild(el("h4", "rt-group-title", group.label));
+      Object.values(group.factors || {}).forEach((factor) => {
+        // Factor title (Exploitability, etc)
+        host.appendChild(el("h4", "rt-subtitle", factor.label));
+        // Table
+        host.appendChild(buildDefinitionsTable(factor));
+      });
+    });
   }).catch((err) => {
     clearHost(host);
     renderHostMessage(host, String(err && (err.message || err)), "rt-error", true);

@@ -188,7 +188,10 @@ h1 {
 .pane-host--risk-table .rt-title,
 .pane-host--risk-summary .rt-title,
 .pane-host--risk-review-action .rt-title,
-.pane-host--risk-export .rt-title {
+.pane-host--risk-export .rt-title,
+.pane-host--risk-definitions .rt-title,
+.pane-host--risk-definitions .rt-group-title,
+.pane-host--risk-definitions .rt-subtitle {
   text-align: center;
 }
 
@@ -339,6 +342,18 @@ h1 {
 .pane-host--risk-definitions .rt-table th:nth-child(3),
 .pane-host--risk-definitions .rt-table td:nth-child(3) {
   width: 40%;
+}
+
+.pane-host--risk-definitions .rt-group-title {
+  background-color: var(--surface-button); 
+  padding: 1.2rem;
+  border-radius: 0.75rem;
+}
+
+.pane-host--risk-definitions .rt-subtitle {
+  background-color: var(--border); 
+  padding: 1.0rem;
+  border-radius: 0.75rem;
 }
 
 /* =========================

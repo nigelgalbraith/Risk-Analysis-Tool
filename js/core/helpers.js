@@ -110,19 +110,16 @@ export function getRiskScore(row) {
     Number(likelihood.exploitability),
     Number(likelihood.exposure),
     Number(likelihood.prevalence)
-  ].filter((v) => Number.isFinite(v));
+  ].filter(Number.isFinite);
   const iValues = [
     Number(impact.confidentiality),
     Number(impact.integrity),
     Number(impact.availability)
-  ].filter((v) => Number.isFinite(v));
+  ].filter(Number.isFinite);
   if (!lValues.length || !iValues.length) return 0;
   const lAvg = lValues.reduce((a, b) => a + b, 0) / lValues.length;
   const iAvg = iValues.reduce((a, b) => a + b, 0) / iValues.length;
-  const score = Math.ceil(lAvg * iAvg);
-  if (score < 0) return 0;
-  if (score > 100) return 100;
-  return score;
+  return Math.ceil(lAvg * iAvg);
 }
 
 

@@ -48,6 +48,17 @@ function applyStrike(prosCell, consCell, status) {
 
 
 /** Builds tooltip text for a full risk factors cell */
+function getDefinition(data, factorKey, score) {
+  const groups = data?.groups || {};
+  for (const group of Object.values(groups)) {
+    const factor = group.factors?.[factorKey];
+    if (factor) {
+      return factor.scores?.[String(score)];
+    }
+  }
+  return "";
+}
+
 function buildRiskFactorTooltip(row, definitionsData) {
   const labels = definitionsData?.labels || {};
   const definitions = definitionsData?.definitions || {};
@@ -60,7 +71,7 @@ function buildRiskFactorTooltip(row, definitionsData) {
   return groups.map((group) => {
     const lines = Object.entries(group.values).map(([key, score]) => {
       const label = labels[key] || key;
-      const description = definitions[key]?.[String(score)] || "No definition available";
+      const description = getDefinition(definitionsData, key, score) || "No definition available";
       return `${label}: ${score} — ${description}`;
     });
     return `${group.title}\n${lines.join("\n")}`;

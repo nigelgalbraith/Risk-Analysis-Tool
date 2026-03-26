@@ -78,9 +78,11 @@ window.INTRO_TEXT = {
       </ul>
   `,
   riskReference: `
-      <p>This displays the likelihood and impact values.</p>
-      <ul>
-        <li>Risk score = avg(likelihood) x avg(impact)</li>
-      </ul>
+    <p>Risk is calculated from likelihood and impact factors.</p>
+    <ul>
+      <li>Likelihood = avg(exploitability, exposure, prevalence)</li>
+      <li>Impact = avg(confidentiality, integrity, availability)</li>
+      <li>Risk score = ceil(likelihood × impact)</li>
+    </ul>
   `
 };
