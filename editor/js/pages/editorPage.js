@@ -18,6 +18,36 @@ import { renderRiskServiceListPane } from "../panes/RiskServiceListPane.js";
 const PAGE_TITLE = "Risk Analysis Editor";
 
 // BUILD
+function defaultControlFromTitle(title) {
+  const id = String(title || "new-control")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "new-control";
+  return {
+    id,
+    label: title || "New Control",
+    default: "disabled",
+    likelihood: { exploitability: 3, exposure: 3, prevalence: 3 },
+    impact: { confidentiality: 3, integrity: 3, availability: 3 },
+    pros: ["Describe the benefit of enabling this control"],
+    cons: ["Describe the risk or tradeoff if this control is missing"]
+  };
+}
+
+
+function uniqueControlId(rows) {
+  const ids = new Set((rows || []).map((row) => row?.id).filter(Boolean));
+  let index = rows.length + 1;
+  let control = defaultControlFromTitle("Control " + String(index));
+  while (ids.has(control.id)) {
+    index += 1;
+    control = defaultControlFromTitle("Control " + String(index));
+  }
+  return control;
+}
+
+
 /** Shows editor status output */
 function showStatus(message, type = "") {
   hosts.status.replaceChildren();
@@ -78,6 +108,35 @@ function selectControl(controlId) {
 }
 
 
+/** Adds a new control to the current Risk Analysis in memory */
+function addControl() {
+  const rows = state.currentRiskRows || [];
+  const control = uniqueControlId(rows);
+  rows.push(control);
+  state.currentRiskRows = rows;
+  state.selectedControlId = control.id;
+  markDirty();
+  renderAll();
+}
+
+
+/** Removes a control from the current Risk Analysis in memory */
+function removeControl(controlId) {
+  const rows = state.currentRiskRows || [];
+  if (rows.length <= 1) {
+    showStatus("At least one risk control is required.", "error");
+    return;
+  }
+  const index = rows.findIndex((row) => row.id === controlId);
+  if (index < 0) return;
+  rows.splice(index, 1);
+  state.currentRiskRows = rows;
+  state.selectedControlId = rows[Math.min(index, rows.length - 1)]?.id || "";
+  markDirty();
+  renderAll();
+}
+
+
 /** Saves only the selected Risk Analysis rows file */
 async function saveSelectedRiskAnalysis() {
   if (!state.selectedService) return;
@@ -120,22 +179,22 @@ async function createService(payload) {
 
 /** Renders all editor panes */
 function renderAll() {
-  hosts.mode.replaceChildren();
-  hosts.side.replaceChildren();
   hosts.main.replaceChildren();
-  renderEditorModePane({ state, host: hosts.mode, actions });
+  renderEditorModePane({ state, host: hosts.main, actions });
   if (state.mode === "add") {
     renderCreateRiskServicePane({ state, host: hosts.main, actions });
     return;
   }
-  renderRiskServiceListPane({ state, host: hosts.side, actions });
+  renderRiskServiceListPane({ state, host: hosts.main, actions });
   renderRiskControlEditorPane({ state, host: hosts.main, actions });
 }
 
 
 const actions = {
+  addControl,
   createService,
   markDirty,
+  removeControl,
   renderAll,
   saveSelectedRiskAnalysis,
   selectControl,
@@ -159,10 +218,8 @@ export async function initEditorPage() {
     activeNavKey: "editor"
   });
   hosts.status = el("div", "editor-status");
-  hosts.mode = el("div", "editor-mode");
-  hosts.side = el("aside", "editor-side");
-  hosts.main = el("div", "editor-main");
-  shell.contentHost.append(hosts.status, hosts.mode, hosts.side, hosts.main);
+  hosts.main = shell.contentHost;
+  shell.header.after(hosts.status);
   showStatus("Loading editor data...");
   try {
     const loaded = await loadEditorRiskData();

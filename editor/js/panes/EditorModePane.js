@@ -4,7 +4,6 @@ import { el } from "../../../js/core/helpers.js";
 // BUILD
 /** Renders the top-level editor workflow choices */
 export function renderEditorModePane({ state, host, actions }) {
-  host.replaceChildren();
   const pane = el("section", "pane editor-mode-pane");
   const actionsRow = el("div", "editor-mode-actions");
   [

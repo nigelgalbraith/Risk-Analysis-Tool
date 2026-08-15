@@ -3,8 +3,8 @@ import { el } from "../../../js/core/helpers.js";
 import { linesText, textLines } from "../core/editorData.js";
 
 // BUILD
-function makeField(labelText, inputNode) {
-  const wrap = el("div", "rd-field");
+function makeField(labelText, inputNode, options = {}) {
+  const wrap = el("div", "rd-field" + (options.wide ? " form-field--wide" : ""));
   wrap.appendChild(el("label", "rd-label", labelText));
   wrap.appendChild(inputNode);
   return wrap;
@@ -71,38 +71,7 @@ export function renderRiskControlEditorPane({ state, host, actions }) {
     pros: makeTextarea(linesText(row.pros)),
     cons: makeTextarea(linesText(row.cons))
   };
-  const identityGroup = el("div", "editor-field-group");
-  identityGroup.appendChild(el("h3", "rt-subtitle", "Control"));
-  identityGroup.appendChild(makeField("ID", id));
-  identityGroup.appendChild(makeField("Label", label));
-  identityGroup.appendChild(makeField("Default", status));
-  pane.appendChild(identityGroup);
-
-  const likelihoodGroup = el("div", "editor-field-group");
-  likelihoodGroup.appendChild(el("h3", "rt-subtitle", "Likelihood"));
-  likelihoodGroup.appendChild(makeField("Exploitability", fields.exploitability));
-  likelihoodGroup.appendChild(makeField("Exposure", fields.exposure));
-  likelihoodGroup.appendChild(makeField("Prevalence", fields.prevalence));
-  pane.appendChild(likelihoodGroup);
-
-  const impactGroup = el("div", "editor-field-group");
-  impactGroup.appendChild(el("h3", "rt-subtitle", "Impact"));
-  impactGroup.appendChild(makeField("Confidentiality", fields.confidentiality));
-  impactGroup.appendChild(makeField("Integrity", fields.integrity));
-  impactGroup.appendChild(makeField("Availability", fields.availability));
-  pane.appendChild(impactGroup);
-
-  const notesGroup = el("div", "editor-field-group editor-field-group--wide");
-  notesGroup.appendChild(el("h3", "rt-subtitle", "Pros and Cons"));
-  notesGroup.appendChild(makeField("Pros", fields.pros));
-  notesGroup.appendChild(makeField("Cons", fields.cons));
-  pane.appendChild(notesGroup);
-  const actionsRow = el("div", "re-actions");
-  const apply = document.createElement("button");
-  apply.type = "button";
-  apply.className = "re-button";
-  apply.textContent = "Apply Control Changes";
-  apply.addEventListener("click", () => {
+  function applyControlChanges() {
     row.id = id.value.trim();
     row.label = label.value.trim();
     row.default = status.value;
@@ -120,15 +89,62 @@ export function renderRiskControlEditorPane({ state, host, actions }) {
     };
     row.pros = textLines(fields.pros.value);
     row.cons = textLines(fields.cons.value);
-    actions.markDirty();
-    actions.selectControl(row.id);
+    state.selectedControlId = row.id;
+  }
+
+  const identityGroup = el("div", "risk-value-grid");
+  identityGroup.appendChild(el("h3", "rt-subtitle", "Control"));
+  identityGroup.appendChild(makeField("ID", id));
+  identityGroup.appendChild(makeField("Label", label));
+  identityGroup.appendChild(makeField("Default", status));
+  pane.appendChild(identityGroup);
+
+  const likelihoodGroup = el("div", "risk-value-grid");
+  likelihoodGroup.appendChild(el("h3", "rt-subtitle", "Likelihood"));
+  likelihoodGroup.appendChild(makeField("Exploitability", fields.exploitability));
+  likelihoodGroup.appendChild(makeField("Exposure", fields.exposure));
+  likelihoodGroup.appendChild(makeField("Prevalence", fields.prevalence));
+  pane.appendChild(likelihoodGroup);
+
+  const impactGroup = el("div", "risk-value-grid");
+  impactGroup.appendChild(el("h3", "rt-subtitle", "Impact"));
+  impactGroup.appendChild(makeField("Confidentiality", fields.confidentiality));
+  impactGroup.appendChild(makeField("Integrity", fields.integrity));
+  impactGroup.appendChild(makeField("Availability", fields.availability));
+  pane.appendChild(impactGroup);
+
+  const notesGroup = el("div", "form-grid form-grid--single");
+  notesGroup.appendChild(el("h3", "rt-subtitle", "Pros and Cons"));
+  notesGroup.appendChild(makeField("Pros", fields.pros, { wide: true }));
+  notesGroup.appendChild(makeField("Cons", fields.cons, { wide: true }));
+  pane.appendChild(notesGroup);
+  const actionsRow = el("div", "re-actions");
+  const add = document.createElement("button");
+  add.type = "button";
+  add.className = "re-button";
+  add.textContent = "Add Control";
+  add.addEventListener("click", () => {
+    applyControlChanges();
+    actions.addControl();
   });
+  actionsRow.appendChild(add);
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.className = "re-button re-button-muted";
+  remove.textContent = "Remove Control";
+  remove.disabled = rows.length <= 1;
+  remove.addEventListener("click", () => actions.removeControl(row.id));
+  actionsRow.appendChild(remove);
   const save = document.createElement("button");
   save.type = "button";
   save.className = "re-button";
-  save.textContent = "Save Risk Analysis";
-  save.addEventListener("click", () => actions.saveSelectedRiskAnalysis());
-  actionsRow.append(apply, save);
+  save.textContent = "Save Risk Assessment";
+  save.addEventListener("click", () => {
+    applyControlChanges();
+    actions.markDirty();
+    actions.saveSelectedRiskAnalysis();
+  });
+  actionsRow.appendChild(save);
   pane.appendChild(actionsRow);
   host.appendChild(pane);
 }

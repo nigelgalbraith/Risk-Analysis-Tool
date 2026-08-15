@@ -56,23 +56,6 @@ body {
   font-size: 1rem;
 }
 
-.editor-layout {
-  display: grid;
-  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
-  gap: 1rem;
-  align-items: start;
-}
-
-.editor-status,
-.editor-mode {
-  grid-column: 1 / -1;
-}
-
-.editor-side,
-.editor-main {
-  min-width: 0;
-}
-
 .editor-pane {
   margin-bottom: 1rem;
 }
@@ -101,10 +84,6 @@ body {
 .editor-pane .rd-textarea {
   resize: vertical;
   min-height: 5.5rem;
-}
-
-.editor-mode-pane {
-  max-width: 58rem;
 }
 
 .editor-mode-actions {
@@ -143,32 +122,74 @@ body {
   min-height: 18rem;
 }
 
-.editor-field-group {
+.form-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
   border-top: 1px solid var(--border);
   margin-top: 1rem;
   padding-top: 1rem;
 }
 
-.editor-field-group .rt-subtitle {
+.form-grid .rt-subtitle,
+.form-field--wide {
+  grid-column: 1 / -1;
+}
+
+.form-grid .rt-subtitle {
+  margin: 0;
+}
+
+.form-grid--single {
+  grid-template-columns: 1fr;
+}
+
+.risk-value-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.risk-value-grid .rt-subtitle {
   grid-column: 1 / -1;
   margin: 0;
 }
 
-.editor-field-group--wide {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.editor-control-group {
+  border-top: 1px solid var(--border);
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+}
+
+.editor-control-title {
+  margin: 0;
+}
+
+.editor-pane > .re-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .editor-intro-textarea {
   margin-bottom: 0.75rem;
 }
 
+.editor-status {
+  width: 95%;
+  margin: 0 auto 0.75rem;
+}
+
 .status-message {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-color, #ccc);
   background: rgba(127, 127, 127, 0.08);
+  text-align: center;
 }
 
 .status-message--success {
@@ -181,19 +202,19 @@ body {
 }
 
 @media (max-width: 760px) {
-  .editor-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .editor-status,
-  .editor-mode {
-    grid-column: auto;
-  }
-
   .editor-mode-actions,
-  .editor-field-group,
-  .editor-field-group--wide {
+  .form-grid,
+  .risk-value-grid {
     grid-template-columns: 1fr;
+  }
+
+  .editor-pane > .re-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editor-pane > .re-actions .re-button {
+    width: 100%;
   }
 }
 
@@ -778,6 +799,10 @@ button:hover { filter: brightness(1.08); }
   .pane {
     width: 100%;
     padding: 0.75rem;
+  }
+
+  .editor-status {
+    width: 100%;
   }
 
   .app { padding: 0.5rem; }

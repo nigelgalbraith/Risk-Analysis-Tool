@@ -1,303 +1,181 @@
-# Risk Analysis Tool
+# RiskAnalysisTool
 
-Risk Analysis Tool is a lightweight, static web application for scoring IT and support-related risk scenarios using structured control checklists.
+RiskAnalysisTool is a static-facing risk analysis application backed by JSON data. The public site lets users review risk controls, toggle control status, and see calculated risk summaries in the browser. The editor runs through the Flask API in `app.py` so risk tables can be created and maintained from the same project.
 
-It is fully client-side, JSON-driven, and runs locally in the browser. No backend or database required.
+## Running the Static Site
 
-Selections are stored in localStorage, allowing you to close the browser and return without losing state.
+For viewing and testing the public-facing site only:
 
----
+```bash
+python3 -m http.server 8000 --directory public
+```
 
-## What It Does
+Open:
 
-- Provides multiple structured “risk analysis” tools
-- Each tool consists of configurable controls
-- Disabling controls increases total danger %
-- Automatically generates a Risk Summary (Low → Critical)
-- Persists state per service using localStorage
-- Includes light/dark theme toggle
-- Runs entirely offline
+```text
+http://localhost:8000
+```
 
----
+This mode serves the static app and data files. It cannot perform editor writes because the Flask editor API is not running.
 
-## Core Concept
+## Running with Docker
 
-Each service (e.g. security, backups, wifi) defines:
+Build and run the Flask app, editor, and public site:
 
-- A set of controls
-- A danger weight for each control
-- Default state (enabled/disabled)
-- Pros and cons per control
+```bash
+docker compose up --build
+```
 
-If a control is disabled, its danger value contributes to the total score.
+Open:
 
-Total danger is capped at 100%.
+```text
+http://localhost:5000
+```
 
-The final score maps to a summary message defined in configuration.
+The Compose file exposes port `5000:5000`, uses the configured container name `risk-analysis-tool`, and mounts:
 
----
+```text
+./public/data:/app/public/data
+./backups:/app/backups
+```
 
-## Pages
+Editor writes therefore persist back into the project data directory, and generated backups are written under `backups/`.
 
-### index.html
+Stop the container:
 
-- Renders the home page
-- Displays service cards
-- Loads intro content
-- Links to individual risk pages
+```bash
+docker compose down
+```
 
-### riskPage.html?service=<key>
+For a clean rebuild:
 
-Single reusable dynamic page.
+```bash
+docker compose build --no-cache
+docker compose up
+```
 
-Examples:
+If the configured container name conflicts with an existing stopped container:
 
-- riskPage.html?service=security
-- riskPage.html?service=wifiInternet
-- riskPage.html?service=backups
+```bash
+docker rm -f risk-analysis-tool
+```
 
-The page reads the `service` query parameter and loads the correct configuration from JSON.
+## Editor Workflow
 
----
+The editor is available from the Flask app at:
 
-## Data Sources
+```text
+http://localhost:5000/editor
+```
 
-### data/riskTables.json
+### Add New Risk Analysis
 
-Defines home-page metadata and the list of available Risk Analyses.
+- Set the risk analysis ID, title, and description.
+- Add one or more controls.
+- Remove additional controls if needed.
+- Create the risk analysis.
 
-Each Risk Analysis entry includes:
+Each control uses the same JSON structure as existing risk table rows:
 
 - `id`
-- `title`
-- `description`
-- `path`
-- `link`
-- `introHtml`
+- `label`
+- `default`
+- `likelihood`
+- `impact`
+- `pros`
+- `cons`
 
-Example structure:
+### Edit Existing Risk Analysis
 
-```json
-{
-  "home": {
-    "title": "Risk Analysis Tool",
-    "introHtml": "<p>Pick a risk analysis tool to get started.</p>"
-  },
-  "analyses": [
-    {
-      "id": "security",
-      "title": "Security Risk Analysis",
-      "description": "Review core security protections.",
-      "path": "riskTables/security.json",
-      "link": "index.html?page=risk&service=security",
-      "introHtml": "<p>This tool helps you review core security protections.</p>"
-    }
-  ]
-}
+- Select an existing risk analysis.
+- Select and edit controls.
+- Add controls.
+- Remove controls, except the final remaining control.
+- Save the whole risk analysis.
+
+There is no separate Apply button. `Save Risk Analysis` automatically applies the currently displayed control values to the in-memory risk table before writing the complete controls array through the existing API.
+
+## Data Storage
+
+Primary data lives in:
+
+```text
+public/data/riskTables.json
+public/data/riskTables/
 ```
 
-Each individual Risk Analysis control file lives under `data/riskTables/`.
+`public/data/riskTables.json` is the registry/index for the available risk analyses. It stores metadata such as ID, title, description, path, link, and intro HTML.
 
-Example control structure:
+`public/data/riskTables/<id>.json` stores the individual control rows for one risk analysis.
 
-```json
-[
-  {
-    "id": "mfa",
-    "label": "Enable MFA",
-    "default": "disabled",
-    "likelihood": {
-      "exploitability": 5,
-      "exposure": 5,
-      "prevalence": 5
-    },
-    "impact": {
-      "confidentiality": 5,
-      "integrity": 4,
-      "availability": 3
-    },
-    "pros": ["Stops most credential-stuffing attacks"],
-    "cons": ["Adds friction for users"]
-  }
-]
+Other data files include:
+
+```text
+public/data/riskDefinitions.json
+public/data/riskSummaryMessages.json
 ```
 
----
+These define factor descriptions and risk summary message ranges used by the public site.
 
-### data/riskSummaryMessages.json
+## Backups
 
-Defines score ranges and associated severity messages.
+The backend writes JSON atomically and keeps local backups before replacing existing data files. Risk table backups are written under:
 
-Example:
-
-```json
-{
-  "min": 0,
-  "max": 25,
-  "label": "Low Risk",
-  "message": "System is reasonably protected."
-}
+```text
+backups/riskTables/
 ```
 
----
+Registry backups are written under:
 
-## Persistence
-
-State is stored in:
-
-```
-localStorage key: riskAnalysisState.v1
+```text
+backups/
 ```
 
-Structure:
-
-```
-state[serviceKey][controlId] = "enabled" | "disabled"
-```
-
-Each service maintains its own independent saved state.
-
----
-
-## Included Risk Tools
-
-Currently defined services include:
-
-- security
-- backups
-- emailAccounts
-- setupTroubleshooting
-- virusCleanup
-- dataBackup
-- computerRepair
-- wifiInternet
-- printerSetup
-
-New tools can be added by creating a new individual Risk Analysis JSON file and adding a registry entry.
-
----
+Backups are generated runtime artifacts and are ignored by Git except for `backups/.gitkeep`.
 
 ## Project Structure
 
-```
-RiskAnalysis/
-│
-├── index.html
-├── app.py
-├── public/
-├── editor/
-├── backups/
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-│
-├── public/index.html
-│
-├── public/css/
-│   └── style.css
-│
-├── public/js/
-│   ├── core/
-│   │   ├── appShell.js
-│   │   ├── eventBus.js
-│   │   ├── pageLifecycle.js
-│   │   ├── pageRuntime.js
-│   │   ├── riskData.js
-│   │   ├── riskValidation.js
-│   │   └── sharedState.js
-│   ├── panes/
-│   │   ├── IntroPane.js
-│   │   ├── CardsPane.js
-│   │   ├── RiskTablePane.js
-│   │   └── SummaryPane.js
-│   ├── pages/
-│   │   ├── indexPage.js
-│   │   └── riskPage.js
-│   └── themeToggle.js
-│
-├── public/data/
-│   ├── riskDefinitions.json
-│   ├── riskTables.json
-│   ├── riskTables/
-│   │   └── <risk-id>.json
-│   └── riskSummaryMessages.json
-│
-├── public/images/
-│   └── (icons + favicons)
-│
-└── public/PythonFiles/
-    └── Image-Optimizer.py
+```text
+public/
+  index.html
+  css/
+  js/
+    core/
+    pages/
+    panes/
+  data/
+    riskTables.json
+    riskTables/
+    riskDefinitions.json
+    riskSummaryMessages.json
+editor/
+  index.html
+  css/
+  js/
+    core/
+    pages/
+    panes/
+backups/
+  .gitkeep
+app.py
+Dockerfile
+docker-compose.yml
+requirements.txt
 ```
 
----
+The JavaScript is organized around small `core`, `pages`, and `panes` modules. The public app reads JSON and stores user selections in browser localStorage. The editor uses the Flask API to validate and write the same JSON files.
 
-## Run Locally
+## Static Public App Behavior
 
-Because the project uses ES modules (`import` statements), serve it over HTTP.
+The public app:
 
-### Option 1: Python
-
-```bash
-cd RiskAnalysisTool-2/public
-python -m http.server 8000
-```
-
-Then open:
-
-```
-http://localhost:8000/
-```
-
----
-
-### Option 2: Any Static Server
-
-- VS Code Live Server
-- Nginx
-- Apache
-- Any simple static file server
-
----
-
-## Adding a New Risk Tool
-
-1. Create `public/data/riskTables/<risk-id>.json`.
-
-2. Add a matching entry to `public/data/riskTables.json`.
-
-3. Put home-card metadata and intro content on that registry entry.
-
-No changes to HTML or core JS are required.
-
-The page automatically renders any valid service key.
-
----
-
-## Asset Optimization (Optional)
-
-`PythonFiles/Image-Optimizer.py` is included to:
-
-- Generate optimized images
-- Produce favicon sets
-- Organize original vs optimized assets
-
-The web application itself does not require Python.
-
----
-
-## Design Goals
-
-- Fully static
-- No backend dependencies
-- JSON-driven configuration
-- Modular pane-based UI architecture
-- Simple scoring logic
-- Easy extensibility
-- Clean, readable structure
-
----
+- Lists available risk analyses from `riskTables.json`.
+- Loads individual risk control files from `public/data/riskTables/`.
+- Stores user control selections in localStorage.
+- Calculates risk from likelihood and impact values.
+- Maps total risk to messages from `riskSummaryMessages.json`.
+- Supports light and dark themes.
 
 ## License
 
 MIT License.
-Anyone is free to use, modify, and improve this project.

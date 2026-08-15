@@ -26,7 +26,7 @@ function createNav(activeNavKey) {
 /** Builds the editor shell and mounts it into #app */
 export function buildEditorShell({ pageTitle, activeNavKey }) {
   const appRoot = document.createElement("div");
-  appRoot.className = "app";
+  appRoot.className = "app editor-app";
   const header = document.createElement("header");
   header.className = "header-centered";
   const heading = document.createElement("h1");
@@ -36,7 +36,7 @@ export function buildEditorShell({ pageTitle, activeNavKey }) {
   header.appendChild(createNav(activeNavKey || "editor"));
   const main = document.createElement("main");
   main.id = "root";
-  main.className = "split editor-layout";
+  main.className = "split";
   appRoot.appendChild(header);
   appRoot.appendChild(main);
   const root = document.getElementById("app");

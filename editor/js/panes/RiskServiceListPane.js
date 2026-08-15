@@ -4,7 +4,6 @@ import { el } from "../../../js/core/helpers.js";
 // BUILD
 /** Renders Risk Analysis and control selection */
 export function renderRiskServiceListPane({ state, host, actions }) {
-  host.replaceChildren();
   const pane = el("section", "pane editor-pane");
   pane.appendChild(el("h2", "rt-title", "Edit Existing Risk Analysis"));
   pane.appendChild(el("label", "rd-label", "Select Risk Analysis"));
