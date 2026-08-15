@@ -68,6 +68,72 @@ function computeTotalRiskScore(reportRows) {
 }
 
 
+/** Formats an ISO date string for display */
+export function formatReportDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleString();
+}
+
+
+/** Returns report rows in the same order used by the review display */
+export function getDisplayReportRows(reportData) {
+  return (Array.isArray(reportData?.rows) ? reportData.rows : []).slice().sort(function (a, b) {
+    const aDisabled = a?.status !== "enabled";
+    const bDisabled = b?.status !== "enabled";
+    if (aDisabled === bDisabled) return 0;
+    return aDisabled ? -1 : 1;
+  });
+}
+
+
+/** Formats the existing report model as readable plain text */
+export function buildRiskReportText(reportData) {
+  const lines = [];
+  const title = reportData?.title || "Review Report";
+  const rows = getDisplayReportRows(reportData);
+
+  function addField(label, value) {
+    lines.push(label);
+    lines.push(value || "-");
+    lines.push("");
+  }
+
+  lines.push(String(title).toUpperCase());
+  lines.push("");
+  addField("Client / Organisation", reportData?.client);
+  addField("System / Device", reportData?.system);
+  addField("Assessor", reportData?.assessor);
+  addField("Generated", formatReportDate(reportData?.generatedAt));
+  addField("Risk Level", reportData?.riskLevel);
+  addField("Risk Score", String(reportData?.totalScore ?? 0) + " / " + String(reportData?.maxScore ?? 0));
+  addField("Summary", reportData?.summaryMessage);
+  lines.push("CONTROLS");
+  lines.push("");
+
+  for (let i = 0; i < rows.length; i += 1) {
+    const row = rows[i] || {};
+    const statusText = row.status ? row.status.charAt(0).toUpperCase() + row.status.slice(1) : "-";
+    const impactItems = row.status === "enabled" ? row.pros : row.cons;
+    lines.push(row.label || "-");
+    lines.push("Status: " + statusText);
+    if (row.status !== "enabled" && row.riskScore) {
+      lines.push("Impact: +" + String(row.riskScore));
+    }
+    lines.push("");
+    for (let j = 0; j < (impactItems || []).length; j += 1) {
+      lines.push("- " + String(impactItems[j] || ""));
+    }
+    lines.push("");
+  }
+
+  lines.push("NOTES");
+  lines.push(reportData?.notes || "-");
+  return lines.join("\n").trim();
+}
+
+
 /** Builds a complete report model for the selected service */
 export async function buildRiskReportData(serviceKey) {
   const [serviceRows, summaryRanges] = await Promise.all([

@@ -6,20 +6,12 @@ import {
   renderHostMessage,
   renderHostTitle
 } from "../core/helpers.js";
+import { formatReportDate, getDisplayReportRows } from "../core/reportBuilder.js";
 
 // STATE
 const REPORT_CLASS = "pane-host--risk-report";
 
 // BUILD
-/** Formats an ISO date string for display */
-function formatReportDate(value) {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleString();
-}
-
-
 /** Creates a report detail row */
 function buildDetailRow(labelText, valueText) {
   const row = el("div", "rr-detail-row");
@@ -93,12 +85,7 @@ function buildControlsTable(reportData) {
   thead.appendChild(headRow);
   table.appendChild(thead);
   const tbody = document.createElement("tbody");
-  const rows = (Array.isArray(reportData.rows) ? reportData.rows : []).slice().sort(function (a, b) {
-  const aDisabled = a?.status !== "enabled";
-  const bDisabled = b?.status !== "enabled";
-  if (aDisabled === bDisabled) return 0;
-    return aDisabled ? -1 : 1;
-  });
+  const rows = getDisplayReportRows(reportData);
   for (let i = 0; i < rows.length; i += 1) {
     const rowData = rows[i] || {};
     const row = document.createElement("tr");

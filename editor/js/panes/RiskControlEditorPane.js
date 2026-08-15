@@ -121,7 +121,7 @@ export function renderRiskControlEditorPane({ state, host, actions }) {
   const actionsRow = el("div", "re-actions");
   const add = document.createElement("button");
   add.type = "button";
-  add.className = "re-button";
+  add.className = "re-button re-button-add";
   add.textContent = "Add Control";
   add.addEventListener("click", () => {
     applyControlChanges();
@@ -130,14 +130,14 @@ export function renderRiskControlEditorPane({ state, host, actions }) {
   actionsRow.appendChild(add);
   const remove = document.createElement("button");
   remove.type = "button";
-  remove.className = "re-button re-button-muted";
+  remove.className = "re-button re-button-remove";
   remove.textContent = "Remove Control";
   remove.disabled = rows.length <= 1;
   remove.addEventListener("click", () => actions.removeControl(row.id));
   actionsRow.appendChild(remove);
   const save = document.createElement("button");
   save.type = "button";
-  save.className = "re-button";
+  save.className = "re-button re-button-save";
   save.textContent = "Save Risk Assessment";
   save.addEventListener("click", () => {
     applyControlChanges();

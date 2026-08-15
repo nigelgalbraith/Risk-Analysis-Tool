@@ -3,7 +3,7 @@ import { createPageRuntime } from "../core/pageRuntime.js";
 import { getServiceKey, titleCase } from "../core/helpers.js";
 import { buildRiskReportPane } from "../panes/RiskReportPane.js";
 import { buildRiskExportPane } from "../panes/RiskExportPane.js";
-import { buildRiskReportData } from "../core/reportBuilder.js";
+import { buildRiskReportData, buildRiskReportText } from "../core/reportBuilder.js";
 
 // STATE
 const BASE_TITLE = "Risk Review";
@@ -44,7 +44,8 @@ export async function initReviewPage() {
   });
   const exportPane = buildRiskExportPane({
     id: "exportHost",
-    backUrl: "index.html?page=risk&service=" + encodeURIComponent(service)
+    backUrl: "index.html?page=risk&service=" + encodeURIComponent(service),
+    reportText: buildRiskReportText(reportData)
   });
   reportHost.appendChild(reportPane.node);
   shell.contentHost.appendChild(exportPane.node);

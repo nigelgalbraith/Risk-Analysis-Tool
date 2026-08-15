@@ -172,7 +172,7 @@ export function renderCreateRiskServicePane({ host, actions }) {
   const actionsRow = el("div", "re-actions");
   const addControl = document.createElement("button");
   addControl.type = "button";
-  addControl.className = "re-button";
+  addControl.className = "re-button re-button-add";
   addControl.textContent = "Add Control";
   addControl.addEventListener("click", () => {
     controlDrafts.push(makeControlDraft(nextControlNumber));
@@ -183,7 +183,7 @@ export function renderCreateRiskServicePane({ host, actions }) {
   actionsRow.appendChild(addControl);
   const removeControl = document.createElement("button");
   removeControl.type = "button";
-  removeControl.className = "re-button re-button-muted";
+  removeControl.className = "re-button re-button-remove";
   removeControl.textContent = "Remove Control";
   removeControl.disabled = controlDrafts.length <= 1;
   removeControl.addEventListener("click", () => {
@@ -195,7 +195,7 @@ export function renderCreateRiskServicePane({ host, actions }) {
   actionsRow.appendChild(removeControl);
   const create = document.createElement("button");
   create.type = "button";
-  create.className = "re-button";
+  create.className = "re-button re-button-save";
   create.textContent = "Save Risk Assessment";
   create.addEventListener("click", () => {
     actions.createService({

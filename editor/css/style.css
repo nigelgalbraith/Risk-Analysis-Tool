@@ -598,12 +598,34 @@ h1 {
   cursor: pointer;
 }
 
+.re-button-add {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.re-button-remove {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.re-button-save {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
 .re-button:hover {
   background: var(--surface-raised);
 }
 
 .re-button-muted {
   background: var(--surface-button-muted);
+}
+
+.re-button:disabled {
+  background: var(--surface-button-muted);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 /* =========================

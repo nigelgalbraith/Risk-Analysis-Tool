@@ -427,6 +427,10 @@ h1 {
   gap: 1rem;
 }
 
+.pane-host--risk-export .re-status {
+  margin-top: 1rem;
+}
+
 .re-button {
   padding: 0.6rem 1rem;
   border-radius: 0.6rem;
@@ -442,6 +446,22 @@ h1 {
 
 .re-button-muted {
   background: var(--surface-button-muted);
+}
+
+.status-message {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  background: rgba(127, 127, 127, 0.08);
+  text-align: center;
+}
+
+.status-message--success {
+  border-color: var(--success);
+}
+
+.status-message--error {
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 /* =========================
