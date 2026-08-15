@@ -1,0 +1,140 @@
+[
+  {
+    "cons": [
+      "Requires boot media and time",
+      "Can be intimidating for users"
+    ],
+    "default": "disabled",
+    "id": "offline-scan",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 4,
+      "integrity": 4
+    },
+    "label": "Run Offline Malware Scan (Boot/Rescue Scan)",
+    "likelihood": {
+      "exploitability": 5,
+      "exposure": 4,
+      "prevalence": 5
+    },
+    "pros": [
+      "Detects malware that hides in running OS",
+      "Improves cleanup success rate"
+    ]
+  },
+  {
+    "cons": [
+      "May remove bundled apps the user expects",
+      "Requires careful review of installed apps"
+    ],
+    "default": "disabled",
+    "id": "pup-removal",
+    "impact": {
+      "availability": 2,
+      "confidentiality": 2,
+      "integrity": 3
+    },
+    "label": "Remove PUPs / Browser Hijackers",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Reduces reinfection risk",
+      "Restores normal browser behaviour"
+    ]
+  },
+  {
+    "cons": [
+      "User loses saved settings/customisations",
+      "Needs re-login to some sites"
+    ],
+    "default": "disabled",
+    "id": "browser-reset",
+    "impact": {
+      "availability": 2,
+      "confidentiality": 2,
+      "integrity": 3
+    },
+    "label": "Reset Browser Extensions / Settings",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Stops malicious redirects",
+      "Removes shady extensions"
+    ]
+  },
+  {
+    "cons": [
+      "Time-consuming",
+      "Reboots may be required"
+    ],
+    "default": "disabled",
+    "id": "patch-after",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 3,
+      "integrity": 4
+    },
+    "label": "Patch OS + Common Apps After Cleanup",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 5
+    },
+    "pros": [
+      "Closes the exploit path used for compromise",
+      "Reduces repeat incidents"
+    ]
+  },
+  {
+    "cons": [
+      "False positives sometimes",
+      "Users may disable if annoyed"
+    ],
+    "default": "disabled",
+    "id": "safe-habits",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 3,
+      "integrity": 4
+    },
+    "label": "Enable Basic Protection (Defender/AV + SmartScreen)",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 5
+    },
+    "pros": [
+      "Blocks common malicious downloads",
+      "Reduces exposure to risky sites and files"
+    ]
+  },
+  {
+    "cons": [
+      "Requires careful review",
+      "Legitimate entries can be mistaken for malware"
+    ],
+    "default": "disabled",
+    "id": "startup-review",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 2,
+      "integrity": 4
+    },
+    "label": "Review Startup Items / Scheduled Tasks",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Finds persistence mechanisms",
+      "Improves confidence cleanup is complete"
+    ]
+  }
+]

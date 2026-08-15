@@ -1,0 +1,84 @@
+{
+  "home": {
+    "title": "Risk Analysis Tool",
+    "introHtml": "\n    <p>\n      Pick a risk analysis tool to get started. Each one helps you review controls, identify gaps, and generate a clear risk summary.\n    </p>\n  "
+  },
+  "reference": {
+    "title": "Risk Reference",
+    "introHtml": "\n    <p>Risk is calculated from likelihood and impact factors.</p>\n    <ul>\n      <li>Likelihood = avg(exploitability, exposure, prevalence)</li>\n      <li>Impact = avg(confidentiality, integrity, availability)</li>\n      <li>Risk score = ceil(likelihood × impact)</li>\n    </ul>\n  "
+  },
+  "analyses": [
+    {
+      "id": "backups",
+      "title": "Backups Risk Analysis",
+      "description": "\n      Analyze backups risks quickly and efficiently. Input data, assess potential threats, and generate comprehensive reports.\n    ",
+      "path": "riskTables/backups.json",
+      "link": "index.html?page=risk&service=backups",
+      "introHtml": "\n      <p>This tool evaluates backup reliability and resilience against data loss, hardware failure, or ransomware.</p>\n      <ul>\n        <li>Assess backup coverage and redundancy</li>\n        <li>Identify missing safeguards</li>\n        <li>Generate a clear risk score and risk level</li>\n      </ul>\n  "
+    },
+    {
+      "id": "computerRepair",
+      "title": "Computer Repair Risk Analysis",
+      "description": "\n      Analyze hardware stability, component health,\n      and repair decisions that affect reliability.\n    ",
+      "path": "riskTables/computerRepair.json",
+      "link": "index.html?page=risk&service=computerRepair",
+      "introHtml": "\n      <p>This tool reviews risks related to hardware repair and system maintenance.</p>\n      <ul>\n        <li>Evaluate hardware diagnostics and repair procedures</li>\n        <li>Assess potential data safety risks during repair</li>\n        <li>Generate a clear risk score and risk level</li>\n      </ul>\n  "
+    },
+    {
+      "id": "dataBackup",
+      "title": "Data Backup Risk Analysis",
+      "description": "\n      Measure resilience against data loss, ransomware,\n      hardware failure, and disaster scenarios.\n    ",
+      "path": "riskTables/dataBackup.json",
+      "link": "index.html?page=risk&service=dataBackup",
+      "introHtml": "\n      <p>This tool evaluates data protection and recovery readiness.</p>\n      <ul>\n        <li>Assess backup reliability and redundancy</li>\n        <li>Identify gaps that could lead to data loss</li>\n        <li>Generate a clear risk score and risk level</li>\n      </ul>\n  "
+    },
+    {
+      "id": "emailAccounts",
+      "title": "Email Accounts Risk Analysis",
+      "description": "\n      Assess risks related to email security, account recovery,\n      authentication methods, and password hygiene.\n    ",
+      "path": "riskTables/emailAccounts.json",
+      "link": "index.html?page=risk&service=emailAccounts",
+      "introHtml": "\n      <p>This tool analyzes the security of email accounts, which are often the primary target for account compromise.</p>\n      <ul>\n        <li>Review authentication and account protections</li>\n        <li>Identify potential takeover risks</li>\n        <li>Generate a clear risk score and risk level</li>\n      </ul>\n  "
+    },
+    {
+      "id": "printerSetup",
+      "title": "Printer Setup Risk Analysis",
+      "description": "\n      Assess risks related to driver configuration,\n      network stability, and print infrastructure reliability.\n    ",
+      "path": "riskTables/printerSetup.json",
+      "link": "index.html?page=risk&service=printerSetup",
+      "introHtml": "\n      <p>This tool reviews risks related to printer configuration and network printing.</p>\n      <ul>\n        <li>Evaluate printer access and network configuration</li>\n        <li>Identify potential data exposure risks</li>\n        <li>Generate a clear risk score and risk level</li>\n      </ul>\n  "
+    },
+    {
+      "id": "security",
+      "title": "Security Risk Analysis",
+      "description": "\n      Analyze security risks quickly and efficiently. Input data, assess potential threats, and generate comprehensive reports.\n    ",
+      "path": "riskTables/security.json",
+      "link": "index.html?page=risk&service=security",
+      "introHtml": "\n      <p>This tool helps you review core security protections and identify weaknesses that increase exposure.</p>\n      <ul>\n        <li>Review important security controls</li>\n        <li>Toggle controls to reflect the current environment</li>\n        <li>Generate a clear risk score and risk level</li>\n      </ul>\n  "
+    },
+    {
+      "id": "setupTroubleshooting",
+      "title": "Setup & Troubleshooting Risk Analysis",
+      "description": "\n      Evaluate system stability risks when configuring,\n      diagnosing, and modifying computer environments.\n    ",
+      "path": "riskTables/setupTroubleshooting.json",
+      "link": "index.html?page=risk&service=setupTroubleshooting",
+      "introHtml": "\n      <p>This tool evaluates risks related to system setup and troubleshooting practices.</p>\n      <ul>\n        <li>Review configuration and update practices</li>\n        <li>Identify weak operational processes</li>\n        <li>Generate a clear risk score and risk level</li>\n      </ul>\n  "
+    },
+    {
+      "id": "virusCleanup",
+      "title": "Virus Cleanup Risk Analysis",
+      "description": "\n      Identify exposure risks during malware removal,\n      system restoration, and post-infection hardening.\n    ",
+      "path": "riskTables/virusCleanup.json",
+      "link": "index.html?page=risk&service=virusCleanup",
+      "introHtml": "\n      <p>This tool analyzes risks involved in malware infection and system cleanup procedures.</p>\n      <ul>\n        <li>Review malware removal steps</li>\n        <li>Identify areas where reinfection could occur</li>\n        <li>Generate a clear risk score and risk level</li>\n      </ul>\n  "
+    },
+    {
+      "id": "wifiInternet",
+      "title": "WiFi & Internet Risk Analysis",
+      "description": "\n      Evaluate network security, router configuration,\n      wireless reliability, and connectivity risks.\n    ",
+      "path": "riskTables/wifiInternet.json",
+      "link": "index.html?page=risk&service=wifiInternet",
+      "introHtml": "\n      <p>This tool evaluates network configuration and wireless security practices.</p>\n      <ul>\n        <li>Review router and Wi-Fi security settings</li>\n        <li>Identify network exposure risks</li>\n        <li>Generate a clear risk score and risk level</li>\n      </ul>\n  "
+    }
+  ]
+}

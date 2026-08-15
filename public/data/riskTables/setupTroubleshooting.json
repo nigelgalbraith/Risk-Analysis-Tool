@@ -1,0 +1,140 @@
+[
+  {
+    "cons": [
+      "May introduce breaking changes",
+      "Can take time and restarts"
+    ],
+    "default": "disabled",
+    "id": "updates",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 3,
+      "integrity": 4
+    },
+    "label": "Run OS Updates + Driver Updates",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 5
+    },
+    "pros": [
+      "Fixes known bugs and stability issues",
+      "Improves security and performance"
+    ]
+  },
+  {
+    "cons": [
+      "Requires a maintained baseline",
+      "Some edge cases need exceptions"
+    ],
+    "default": "disabled",
+    "id": "baseline",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 2,
+      "integrity": 3
+    },
+    "label": "Apply Known-Good Baseline Configuration",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 3,
+      "prevalence": 4
+    },
+    "pros": [
+      "Reduces configuration drift",
+      "Makes issues easier to reproduce and fix"
+    ]
+  },
+  {
+    "cons": [
+      "Consumes some disk space",
+      "Users may not know where to find logs"
+    ],
+    "default": "disabled",
+    "id": "logs",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 1,
+      "integrity": 3
+    },
+    "label": "Enable Basic Logging and Error Capture",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 3,
+      "prevalence": 4
+    },
+    "pros": [
+      "Speeds up diagnosis",
+      "Reduces guesswork and repeated steps"
+    ]
+  },
+  {
+    "cons": [
+      "Takes time and storage",
+      "Not always reliable if system is already unstable"
+    ],
+    "default": "disabled",
+    "id": "restore-point",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 1,
+      "integrity": 4
+    },
+    "label": "Create Restore Point / Snapshot Before Changes",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Provides rollback if changes break the system",
+      "Reduces fear of troubleshooting steps"
+    ]
+  },
+  {
+    "cons": [
+      "Logs can be noisy",
+      "Requires interpretation"
+    ],
+    "default": "disabled",
+    "id": "event-logs",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 1,
+      "integrity": 3
+    },
+    "label": "Review Event Logs / Error History",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 3,
+      "prevalence": 4
+    },
+    "pros": [
+      "Helps identify recurring fault patterns",
+      "Improves troubleshooting accuracy"
+    ]
+  },
+  {
+    "cons": [
+      "Takes effort to maintain",
+      "May be skipped under pressure"
+    ],
+    "default": "disabled",
+    "id": "safe-rollback",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 1,
+      "integrity": 3
+    },
+    "label": "Document Safe Rollback Steps",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 3,
+      "prevalence": 4
+    },
+    "pros": [
+      "Reduces panic during failed changes",
+      "Improves repeatability and confidence"
+    ]
+  }
+]

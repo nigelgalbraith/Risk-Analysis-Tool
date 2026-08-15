@@ -1,0 +1,163 @@
+[
+  {
+    "cons": [
+      "Higher storage cost",
+      "More operational overhead"
+    ],
+    "default": "disabled",
+    "id": "3-2-1",
+    "impact": {
+      "availability": 5,
+      "confidentiality": 3,
+      "integrity": 5
+    },
+    "label": "3-2-1 Backups",
+    "likelihood": {
+      "exploitability": 5,
+      "exposure": 5,
+      "prevalence": 5
+    },
+    "pros": [
+      "Strong resilience to ransomware and hardware failure",
+      "Multiple recovery paths"
+    ]
+  },
+  {
+    "cons": [
+      "Takes time to run regularly",
+      "Needs documented procedure"
+    ],
+    "default": "disabled",
+    "id": "restore-test",
+    "impact": {
+      "availability": 5,
+      "confidentiality": 2,
+      "integrity": 5
+    },
+    "label": "Restore Testing",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 5,
+      "prevalence": 4
+    },
+    "pros": [
+      "Proves backups are usable",
+      "Reduces recovery-time surprises"
+    ]
+  },
+  {
+    "cons": [
+      "Requires bandwidth or transport",
+      "Needs encryption and access control"
+    ],
+    "default": "disabled",
+    "id": "offsite-copy",
+    "impact": {
+      "availability": 5,
+      "confidentiality": 3,
+      "integrity": 5
+    },
+    "label": "Maintain Offsite Backup Copy",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Protects against theft, fire, and site loss",
+      "Prevents single-location failure"
+    ]
+  },
+  {
+    "cons": [
+      "Key management is required",
+      "Recovery depends on key availability"
+    ],
+    "default": "disabled",
+    "id": "backup-encryption",
+    "impact": {
+      "availability": 1,
+      "confidentiality": 5,
+      "integrity": 2
+    },
+    "label": "Encrypt Backup Media",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 4,
+      "prevalence": 3
+    },
+    "pros": [
+      "Protects sensitive data if media is lost",
+      "Improves privacy and compliance posture"
+    ]
+  },
+  {
+    "cons": [
+      "Alert setup needed",
+      "Too many alerts can be ignored"
+    ],
+    "default": "disabled",
+    "id": "monitoring",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 1,
+      "integrity": 4
+    },
+    "label": "Backup Monitoring / Failure Alerts",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Detects failures early",
+      "Improves backup reliability over time"
+    ]
+  },
+  {
+    "cons": [
+      "Uses more storage",
+      "Requires policy review"
+    ],
+    "default": "disabled",
+    "id": "retention",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 1,
+      "integrity": 5
+    },
+    "label": "Use Versioning / Retention Policy",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Protects against accidental overwrite and silent corruption",
+      "Improves recovery options"
+    ]
+  },
+  {
+    "cons": [
+      "More process overhead",
+      "May reduce convenience"
+    ],
+    "default": "disabled",
+    "id": "offline-copy",
+    "impact": {
+      "availability": 5,
+      "confidentiality": 2,
+      "integrity": 5
+    },
+    "label": "Keep Offline or Immutable Copy",
+    "likelihood": {
+      "exploitability": 5,
+      "exposure": 5,
+      "prevalence": 4
+    },
+    "pros": [
+      "Strong protection against ransomware",
+      "Prevents backup tampering"
+    ]
+  }
+]

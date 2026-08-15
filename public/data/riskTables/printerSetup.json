@@ -1,0 +1,117 @@
+[
+  {
+    "cons": [
+      "Driver packages can be bloated",
+      "Vendor installers can add junk software"
+    ],
+    "default": "disabled",
+    "id": "correct-driver",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 1,
+      "integrity": 2
+    },
+    "label": "Install Correct Driver / Use Vendor Package",
+    "likelihood": {
+      "exploitability": 2,
+      "exposure": 3,
+      "prevalence": 4
+    },
+    "pros": [
+      "Prevents feature loss and errors",
+      "Improves stability"
+    ]
+  },
+  {
+    "cons": [
+      "Requires router access",
+      "Misconfig can break other devices"
+    ],
+    "default": "disabled",
+    "id": "network-config",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 1,
+      "integrity": 2
+    },
+    "label": "Assign Stable Printer IP / DHCP Reservation",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Stops printer disappearing from network",
+      "Consistent discovery and mapping"
+    ]
+  },
+  {
+    "cons": [
+      "Queued jobs are lost",
+      "Can hide deeper driver or network issues"
+    ],
+    "default": "disabled",
+    "id": "spooler",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 1,
+      "integrity": 1
+    },
+    "label": "Clear / Reset Print Spooler When Stuck",
+    "likelihood": {
+      "exploitability": 2,
+      "exposure": 3,
+      "prevalence": 3
+    },
+    "pros": [
+      "Fixes queued or stuck jobs quickly",
+      "Restores printing without full reinstall"
+    ]
+  },
+  {
+    "cons": [
+      "Takes a few minutes",
+      "Requires user presence or confirmation"
+    ],
+    "default": "disabled",
+    "id": "test-page",
+    "impact": {
+      "availability": 2,
+      "confidentiality": 1,
+      "integrity": 1
+    },
+    "label": "Print Test Page + Scan Test (If Applicable)",
+    "likelihood": {
+      "exploitability": 2,
+      "exposure": 2,
+      "prevalence": 3
+    },
+    "pros": [
+      "Confirms end-to-end function",
+      "Catches issues early"
+    ]
+  },
+  {
+    "cons": [
+      "May need repeating on multiple profiles",
+      "Users may change it accidentally"
+    ],
+    "default": "disabled",
+    "id": "default-printer",
+    "impact": {
+      "availability": 2,
+      "confidentiality": 1,
+      "integrity": 1
+    },
+    "label": "Set Correct Default Printer / Queue",
+    "likelihood": {
+      "exploitability": 2,
+      "exposure": 2,
+      "prevalence": 3
+    },
+    "pros": [
+      "Reduces user confusion",
+      "Prevents jobs going to wrong printer"
+    ]
+  }
+]

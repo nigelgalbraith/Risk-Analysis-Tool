@@ -1,0 +1,140 @@
+[
+  {
+    "cons": [
+      "Takes time to run properly",
+      "Results require interpretation"
+    ],
+    "default": "disabled",
+    "id": "diagnostics",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 1,
+      "integrity": 3
+    },
+    "label": "Run Hardware Diagnostics (Disk/RAM/SMART)",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Identifies failing hardware early",
+      "Prevents repeated time-wasting fixes"
+    ]
+  },
+  {
+    "cons": [
+      "Requires opening device",
+      "Risk of damage if handled poorly"
+    ],
+    "default": "disabled",
+    "id": "thermal",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 1,
+      "integrity": 2
+    },
+    "label": "Thermal Cleanup (Dust + Fans + Paste Check)",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 3,
+      "prevalence": 4
+    },
+    "pros": [
+      "Prevents thermal shutdowns",
+      "Extends component lifespan"
+    ]
+  },
+  {
+    "cons": [
+      "Cost",
+      "Requires migration planning"
+    ],
+    "default": "disabled",
+    "id": "storage-health",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 4,
+      "integrity": 5
+    },
+    "label": "Replace Failing Drive / Migrate to SSD",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 5,
+      "prevalence": 4
+    },
+    "pros": [
+      "Reduces crash and data loss risk",
+      "Often gives major performance improvement"
+    ]
+  },
+  {
+    "cons": [
+      "Time-consuming",
+      "Requires backups and app reinstall"
+    ],
+    "default": "disabled",
+    "id": "clean-os",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 2,
+      "integrity": 4
+    },
+    "label": "Clean OS Reinstall (Last Resort)",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Removes deep software corruption",
+      "Restores a stable baseline"
+    ]
+  },
+  {
+    "cons": [
+      "Takes extra time",
+      "Needs enough storage space"
+    ],
+    "default": "disabled",
+    "id": "backup-before-repair",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 5,
+      "integrity": 4
+    },
+    "label": "Backup Important Data Before Repair",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 5,
+      "prevalence": 4
+    },
+    "pros": [
+      "Reduces chance of accidental data loss",
+      "Protects user trust during repair"
+    ]
+  },
+  {
+    "cons": [
+      "Easy to overlook",
+      "Some users may ignore warnings"
+    ],
+    "default": "disabled",
+    "id": "disk-space",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 1,
+      "integrity": 2
+    },
+    "label": "Check Disk Space / Health Before Major Changes",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 3,
+      "prevalence": 4
+    },
+    "pros": [
+      "Prevents failed installs and unstable behaviour",
+      "Catches simple problems early"
+    ]
+  }
+]

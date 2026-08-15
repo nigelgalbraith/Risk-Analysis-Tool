@@ -1,0 +1,163 @@
+[
+  {
+    "cons": [
+      "Adds sign-in friction",
+      "Requires recovery options to be configured"
+    ],
+    "default": "disabled",
+    "id": "mfa",
+    "impact": {
+      "availability": 3,
+      "confidentiality": 5,
+      "integrity": 4
+    },
+    "label": "Enable MFA on Email Account",
+    "likelihood": {
+      "exploitability": 5,
+      "exposure": 5,
+      "prevalence": 5
+    },
+    "pros": [
+      "Blocks most account takeover attempts",
+      "Protects if password leaks"
+    ]
+  },
+  {
+    "cons": [
+      "Recovery methods must be kept up to date",
+      "Poor recovery security can be a weak point"
+    ],
+    "default": "disabled",
+    "id": "recovery",
+    "impact": {
+      "availability": 4,
+      "confidentiality": 2,
+      "integrity": 3
+    },
+    "label": "Set Recovery Email/Phone + Backup Codes",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 4,
+      "prevalence": 3
+    },
+    "pros": [
+      "Prevents permanent lockout",
+      "Makes recovery fast and controlled"
+    ]
+  },
+  {
+    "cons": [
+      "User adoption hurdle",
+      "Requires secure master password"
+    ],
+    "default": "disabled",
+    "id": "password-manager",
+    "impact": {
+      "availability": 2,
+      "confidentiality": 5,
+      "integrity": 3
+    },
+    "label": "Use Password Manager + Unique Strong Password",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 5,
+      "prevalence": 5
+    },
+    "pros": [
+      "Stops password reuse risk",
+      "Improves password strength and hygiene"
+    ]
+  },
+  {
+    "cons": [
+      "Setup complexity for some users",
+      "Requires documentation/support"
+    ],
+    "default": "disabled",
+    "id": "mail-client-security",
+    "impact": {
+      "availability": 2,
+      "confidentiality": 3,
+      "integrity": 3
+    },
+    "label": "Secure Mail Client Settings (IMAP/SMTP App Passwords)",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 4,
+      "prevalence": 3
+    },
+    "pros": [
+      "Reduces legacy auth exposure",
+      "Limits impact of compromised devices"
+    ]
+  },
+  {
+    "cons": [
+      "Requires manual review",
+      "Users may not understand suspicious rules"
+    ],
+    "default": "disabled",
+    "id": "forwarding-rules",
+    "impact": {
+      "availability": 1,
+      "confidentiality": 5,
+      "integrity": 3
+    },
+    "label": "Review Mail Forwarding Rules and Filters",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Detects silent exfiltration or hijack behaviour",
+      "Improves visibility into account abuse"
+    ]
+  },
+  {
+    "cons": [
+      "Can sign users out unexpectedly",
+      "Needs re-login on trusted devices"
+    ],
+    "default": "disabled",
+    "id": "old-sessions",
+    "impact": {
+      "availability": 2,
+      "confidentiality": 3,
+      "integrity": 2
+    },
+    "label": "Remove Old Devices / Sessions",
+    "likelihood": {
+      "exploitability": 3,
+      "exposure": 4,
+      "prevalence": 4
+    },
+    "pros": [
+      "Cuts off forgotten or risky sessions",
+      "Improves account hygiene"
+    ]
+  },
+  {
+    "cons": [
+      "Older apps may stop working",
+      "May need migration or support"
+    ],
+    "default": "disabled",
+    "id": "disable-legacy-auth",
+    "impact": {
+      "availability": 2,
+      "confidentiality": 4,
+      "integrity": 3
+    },
+    "label": "Disable Legacy Authentication Where Possible",
+    "likelihood": {
+      "exploitability": 4,
+      "exposure": 5,
+      "prevalence": 4
+    },
+    "pros": [
+      "Reduces older insecure login paths",
+      "Improves modern auth posture"
+    ]
+  }
+]
