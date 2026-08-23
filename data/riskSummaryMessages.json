@@ -1,0 +1,6 @@
+[
+  { "minRatio": 0.00, "maxRatio": 0.25, "title": "Low", "color": "#2e7d32", "message": "Low exposure. Maintain controls and review periodically." },
+  { "minRatio": 0.26, "maxRatio": 0.50, "title": "Moderate", "color": "#f9a825", "message": "Moderate exposure. Improve the most valuable controls first." },
+  { "minRatio": 0.51, "maxRatio": 0.75, "title": "High", "color": "#ef6c00", "message": "High exposure. Prioritise remediation and reduce risk quickly." },
+  { "minRatio": 0.76, "maxRatio": 1.00, "title": "Critical", "color": "#c62828", "message": "Critical exposure. Treat as urgent and implement key controls immediately." }
+]
